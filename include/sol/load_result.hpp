@@ -29,7 +29,7 @@
 #include <sol/proxy_base.hpp>
 #include <cstdint>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 	struct load_result : public proxy_base<load_result> {
 	private:
 		lua_State* L;

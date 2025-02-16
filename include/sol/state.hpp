@@ -27,7 +27,7 @@
 #include <sol/state_view.hpp>
 #include <sol/thread.hpp>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 
 	class state : private std::unique_ptr<lua_State, detail::state_deleter>, public state_view {
 	private:

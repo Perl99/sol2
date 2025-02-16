@@ -26,7 +26,7 @@
 
 #include <sol/stack.hpp>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 	template <typename T>
 	struct as_args_t {
 		T src;

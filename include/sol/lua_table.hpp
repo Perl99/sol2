@@ -26,7 +26,7 @@
 
 #include <sol/table_core.hpp>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 
 	template <typename ref_t>
 	struct basic_lua_table : basic_table_core<false, ref_t> {

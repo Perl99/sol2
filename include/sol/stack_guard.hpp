@@ -40,7 +40,9 @@ namespace sol {
 #endif // No Exceptions
 		}
 	} // namespace detail
+}
 
+CXX20_EXPORT namespace sol {
 	struct stack_guard {
 		lua_State* L;
 		int top;

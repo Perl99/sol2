@@ -48,6 +48,9 @@ namespace sol {
 		}
 	} // namespace detail
 
+}
+
+CXX20_EXPORT namespace sol {
 	template <>
 	struct tie_size<unsafe_function_result> : std::integral_constant<std::size_t, SIZE_MAX> { };
 

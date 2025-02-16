@@ -26,7 +26,7 @@
 
 #include <sol/demangle.hpp>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 
 	template <typename T>
 	struct usertype_traits {

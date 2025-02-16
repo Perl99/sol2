@@ -27,7 +27,7 @@
 #include <sol/reference.hpp>
 #include <sol/stack.hpp>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 
 	template <typename R = reference, bool should_pop = !is_stack_based_v<R>, typename T>
 	R make_reference(lua_State* L, T&& value) {

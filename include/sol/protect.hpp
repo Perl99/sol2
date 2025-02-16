@@ -27,7 +27,7 @@
 #include <sol/traits.hpp>
 #include <utility>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 
 	template <typename T>
 	struct protect_t {

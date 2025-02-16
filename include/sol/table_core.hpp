@@ -62,7 +62,9 @@ namespace sol {
 		}
 
 	} // namespace detail
+}
 
+CXX20_EXPORT namespace sol {
 	template <bool top_level, typename ref_t>
 	class basic_table_core : public basic_object<ref_t> {
 	private:

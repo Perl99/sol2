@@ -36,7 +36,7 @@
 
 #include <optional>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 
 #if SOL_IS_ON(SOL_USE_BOOST)
 	template <typename T>
@@ -52,7 +52,9 @@ namespace sol {
 		template <typename T>
 		constexpr inline bool is_optional_v = is_optional<T>::value;
 	} // namespace meta
+}
 
+namespace sol {
 	namespace detail {
 		template <typename T>
 		struct associated_nullopt {

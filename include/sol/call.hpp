@@ -947,6 +947,10 @@ namespace sol {
 		struct is_var_bind<policy_wrapper<F, Policies...>> : is_var_bind<meta::unqualified_t<F>> { };
 	} // namespace call_detail
 
+}
+
+
+CXX20_EXPORT namespace sol {
 	template <typename T>
 	struct is_variable_binding : call_detail::is_var_bind<meta::unqualified_t<T>> { };
 

@@ -35,7 +35,7 @@
 #include <iostream>
 #endif
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 	inline void register_main_thread(lua_State* L) {
 #if SOL_LUA_VERSION_I_ < 502
 		if (L == nullptr) {

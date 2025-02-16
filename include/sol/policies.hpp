@@ -28,7 +28,7 @@
 
 #include <array>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 	namespace detail {
 		struct policy_base_tag { };
 	} // namespace detail
@@ -85,7 +85,9 @@ namespace sol {
 	auto policies(F&& f, Args&&... args) {
 		return policy_wrapper<std::decay_t<F>, std::decay_t<Args>...>(std::forward<F>(f), std::forward<Args>(args)...);
 	}
+}
 
+namespace sol {
 	namespace detail {
 		template <typename T>
 		using is_policy = meta::is_specialization_of<T, policy_wrapper>;

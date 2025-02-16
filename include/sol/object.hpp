@@ -29,7 +29,7 @@
 #include <sol/stack.hpp>
 #include <sol/object_base.hpp>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 
 	template <typename base_type>
 	class basic_object : public basic_object_base<base_type> {

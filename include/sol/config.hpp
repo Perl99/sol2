@@ -47,4 +47,8 @@ the build system, or the command line options of your compiler.
 
 */
 
+#ifndef CXX20_EXPORT
+#define CXX20_EXPORT
+#endif
+
 #endif // SOL_CONFIG_HPP

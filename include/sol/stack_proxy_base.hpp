@@ -27,7 +27,7 @@
 #include <sol/stack.hpp>
 #include <sol/proxy_base.hpp>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 	struct stack_proxy_base : public proxy_base<stack_proxy_base> {
 	private:
 		lua_State* m_L;

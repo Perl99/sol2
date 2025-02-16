@@ -33,7 +33,7 @@
 
 #include <sol/stack/detail/pairs.hpp>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 
 	struct pairs_sentinel { };
 

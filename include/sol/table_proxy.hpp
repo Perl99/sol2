@@ -29,7 +29,7 @@
 #include <sol/protected_function.hpp>
 #include <sol/proxy_base.hpp>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 
 	template <typename Table, typename Key>
 	struct table_proxy : public proxy_base<table_proxy<Table, Key>> {

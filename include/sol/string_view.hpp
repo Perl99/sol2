@@ -31,7 +31,7 @@
 #include <string_view>
 #include <functional>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 	template <typename C, typename T = std::char_traits<C>>
 	using basic_string_view = std::basic_string_view<C, T>;
 

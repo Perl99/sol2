@@ -28,36 +28,51 @@
 #include <sol/usertype_traits.hpp>
 #include <sol/unique_usertype_traits.hpp>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 	template <typename... Args>
 	struct base_list { };
 	template <typename... Args>
 	using bases = base_list<Args...>;
 
 	typedef bases<> base_classes_tag;
-	const auto base_classes = base_classes_tag();
+	constexpr auto base_classes = base_classes_tag();
 
 	template <typename... Args>
 	struct is_to_stringable<base_list<Args...>> : std::false_type { };
 
+}
+
+namespace sol {
 	namespace detail {
 
-		inline decltype(auto) base_class_check_key() {
+#ifndef CXX20_MODULE
+		inline
+#endif
+		decltype(auto) base_class_check_key() {
 			static const auto& key = "class_check";
 			return key;
 		}
 
-		inline decltype(auto) base_class_cast_key() {
+#ifndef CXX20_MODULE
+		inline
+#endif
+		decltype(auto) base_class_cast_key() {
 			static const auto& key = "class_cast";
 			return key;
 		}
 
-		inline decltype(auto) base_class_index_propogation_key() {
+#ifndef CXX20_MODULE
+		inline
+#endif
+		decltype(auto) base_class_index_propogation_key() {
 			static const auto& key = u8"\xF0\x9F\x8C\xB2.index";
 			return key;
 		}
 
-		inline decltype(auto) base_class_new_index_propogation_key() {
+#ifndef CXX20_MODULE
+		inline
+#endif
+		decltype(auto) base_class_new_index_propogation_key() {
 			static const auto& key = u8"\xF0\x9F\x8C\xB2.new_index";
 			return key;
 		}

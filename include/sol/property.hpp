@@ -29,7 +29,7 @@
 #include <type_traits>
 #include <utility>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 	namespace detail {
 		struct no_prop { };
 	} // namespace detail

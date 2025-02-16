@@ -32,7 +32,7 @@
 #include <sol/protected_handler.hpp>
 #include <sol/coroutine.hpp>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 
 #if 0
 

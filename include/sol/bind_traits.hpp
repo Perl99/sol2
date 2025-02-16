@@ -33,13 +33,17 @@ namespace sol { namespace meta {
 		template <typename F>
 		using detect_deducible_signature = decltype(&F::operator());
 	} // namespace meta_detail
+}}
 
+CXX20_EXPORT namespace sol { namespace meta {
 	template <typename F>
 	using call_operator_deducible = typename is_detected<meta_detail::detect_deducible_signature, F>::type;
 
 	template <typename F>
 	constexpr inline bool call_operator_deducible_v = call_operator_deducible<F>::value;
+}}
 
+namespace sol { namespace meta {
 	namespace meta_detail {
 
 		template <std::size_t I, typename T>
@@ -522,10 +526,14 @@ namespace sol { namespace meta {
 		};
 
 	} // namespace meta_detail
+}}
 
+CXX20_EXPORT namespace sol { namespace meta {
 	template <typename Signature>
 	using bind_traits = meta_detail::callable_traits<Signature>;
+}}
 
+namespace sol { namespace meta {
 	namespace meta_detail {
 		template <typename, bool>
 		struct is_probably_stateless_lambda : std::false_type { };
@@ -533,7 +541,9 @@ namespace sol { namespace meta {
 		template <typename T>
 		struct is_probably_stateless_lambda<T, true> : std::is_convertible<T, typename bind_traits<T>::function_type*>::type { };
 	} // namespace meta_detail
+}}
 
+CXX20_EXPORT namespace sol { namespace meta {
 	template <typename T>
 	using is_probably_stateless_lambda = typename meta_detail::is_probably_stateless_lambda<T, std::is_empty_v<T> && call_operator_deducible_v<T>>::type;
 

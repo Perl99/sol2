@@ -30,7 +30,7 @@
 #include <sol/bytecode.hpp>
 #include <functional>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 	template <typename... Ret, typename... Args>
 	decltype(auto) stack_proxy::call(Args&&... args) {
 		stack_function sf(this->lua_state(), this->stack_index());
@@ -76,6 +76,10 @@ namespace sol {
 		return *this;
 	}
 
+}
+
+CXX20_EXPORT namespace sol {
+
 	namespace detail {
 		template <typename... R>
 		struct std_shim {
@@ -104,6 +108,9 @@ namespace sol {
 		};
 	} // namespace detail
 
+}
+
+CXX20_EXPORT namespace sol {
 	namespace stack {
 		template <typename Signature>
 		struct unqualified_getter<std::function<Signature>> {

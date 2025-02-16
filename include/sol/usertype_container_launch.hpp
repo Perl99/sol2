@@ -363,6 +363,11 @@ namespace sol {
 			};
 		} // namespace stack_detail
 
+	}
+}
+
+CXX20_EXPORT namespace sol {
+	namespace stack {
 		template <typename T>
 		struct unqualified_pusher<as_container_t<T>> {
 			using C = meta::unqualified_t<T>;

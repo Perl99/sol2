@@ -116,6 +116,9 @@ namespace sol {
 
 	} // namespace function_detail
 
+}
+
+CXX20_EXPORT namespace sol {
 	template <typename F, F fx>
 	inline int c_call(lua_State* L) {
 		typedef meta::unqualified_t<F> Fu;

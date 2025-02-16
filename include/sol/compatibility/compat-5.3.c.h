@@ -49,7 +49,7 @@
 #endif /* Lua File Buffer Size */
 
 
-static char* compat53_strerror(int en, char* buff, size_t sz) {
+inline char* compat53_strerror(int en, char* buff, size_t sz) {
 #if COMPAT53_HAVE_STRERROR_R
 	/* use strerror_r here, because it's available on these specific platforms */
 	if (sz > 0) {
@@ -91,7 +91,7 @@ COMPAT53_API int lua_absindex(lua_State* L, int i) {
 }
 
 
-static void compat53_call_lua(lua_State* L, char const code[], size_t len, int nargs, int nret) {
+inline void compat53_call_lua(lua_State* L, char const code[], size_t len, int nargs, int nret) {
 	lua_rawgetp(L, LUA_REGISTRYINDEX, (void*)code);
 	if (lua_type(L, -1) != LUA_TFUNCTION) {
 		lua_pop(L, 1);
@@ -292,7 +292,7 @@ COMPAT53_API void* luaL_testudata(lua_State* L, int i, const char* tname) {
 }
 
 
-static int compat53_countlevels(lua_State* L) {
+inline int compat53_countlevels(lua_State* L) {
 	lua_Debug ar;
 	int li = 1, le = 1;
 	/* find an upper bound */
@@ -311,7 +311,7 @@ static int compat53_countlevels(lua_State* L) {
 	return le - 1;
 }
 
-static int compat53_findfield(lua_State* L, int objidx, int level) {
+inline int compat53_findfield(lua_State* L, int objidx, int level) {
 	if (level == 0 || !lua_istable(L, -1))
 		return 0;                               /* not found */
 	lua_pushnil(L);                              /* start 'next' loop */
@@ -334,7 +334,7 @@ static int compat53_findfield(lua_State* L, int objidx, int level) {
 	return 0; /* not found */
 }
 
-static int compat53_pushglobalfuncname(lua_State* L, lua_Debug* ar) {
+inline int compat53_pushglobalfuncname(lua_State* L, lua_Debug* ar) {
 	int top = lua_gettop(L);
 	lua_getinfo(L, "f", ar); /* push function */
 	lua_pushvalue(L, LUA_GLOBALSINDEX);
@@ -349,7 +349,7 @@ static int compat53_pushglobalfuncname(lua_State* L, lua_Debug* ar) {
 	}
 }
 
-static void compat53_pushfuncname(lua_State* L, lua_Debug* ar) {
+inline void compat53_pushfuncname(lua_State* L, lua_Debug* ar) {
 	if (*ar->namewhat != '\0') /* is there a name? */
 		lua_pushfstring(L, "function " LUA_QS, ar->name);
 	else if (*ar->what == 'm') /* main? */
@@ -417,7 +417,7 @@ COMPAT53_API int luaL_fileresult(lua_State* L, int stat, const char* fname) {
 }
 
 
-static int compat53_checkmode(lua_State* L, const char* mode, const char* modename, int err) {
+inline int compat53_checkmode(lua_State* L, const char* mode, const char* modename, int err) {
 	if (mode && strchr(mode, modename[0]) == NULL) {
 		lua_pushfstring(L, "attempt to load a %s chunk (mode is '%s')", modename, mode);
 		return err;
@@ -435,7 +435,7 @@ typedef struct {
 } compat53_reader_data;
 
 
-static const char* compat53_reader(lua_State* L, void* ud, size_t* size) {
+inline const char* compat53_reader(lua_State* L, void* ud, size_t* size) {
 	compat53_reader_data* data = (compat53_reader_data*)ud;
 	if (data->has_peeked_data) {
 		data->has_peeked_data = 0;
@@ -471,7 +471,7 @@ typedef struct {
 } compat53_LoadF;
 
 
-static const char* compat53_getF(lua_State* L, void* ud, size_t* size) {
+inline const char* compat53_getF(lua_State* L, void* ud, size_t* size) {
 	compat53_LoadF* lf = (compat53_LoadF*)ud;
 	(void)L;            /* not used */
 	if (lf->n > 0) {    /* are there pre-read characters to be read? */
@@ -490,7 +490,7 @@ static const char* compat53_getF(lua_State* L, void* ud, size_t* size) {
 }
 
 
-static int compat53_errfile(lua_State* L, const char* what, int fnameindex) {
+inline int compat53_errfile(lua_State* L, const char* what, int fnameindex) {
 	char buf[512] = { 0 };
 	const char* serr = compat53_strerror(errno, buf, sizeof(buf));
 	const char* filename = lua_tostring(L, fnameindex) + 1;
@@ -500,7 +500,7 @@ static int compat53_errfile(lua_State* L, const char* what, int fnameindex) {
 }
 
 
-static int compat53_skipBOM(compat53_LoadF* lf) {
+inline int compat53_skipBOM(compat53_LoadF* lf) {
 	const char* p = "\xEF\xBB\xBF"; /* UTF-8 BOM mark */
 	int c;
 	lf->n = 0;
@@ -522,7 +522,7 @@ static int compat53_skipBOM(compat53_LoadF* lf) {
 ** first "valid" character of the file (after the optional BOM and
 ** a first-line comment).
 */
-static int compat53_skipcomment(compat53_LoadF* lf, int* cp) {
+inline int compat53_skipcomment(compat53_LoadF* lf, int* cp) {
 	int c = *cp = compat53_skipBOM(lf);
 	if (c == '#') { /* first line is a comment (Unix exec. file)? */
 		do {       /* skip first line */
@@ -760,7 +760,7 @@ COMPAT53_API lua_Integer lua_tointegerx(lua_State* L, int i, int* isnum) {
 }
 
 
-static void compat53_reverse(lua_State* L, int a, int b) {
+inline void compat53_reverse(lua_State* L, int a, int b) {
 	for (; a < b; ++a, --b) {
 		lua_pushvalue(L, a);
 		lua_pushvalue(L, b);

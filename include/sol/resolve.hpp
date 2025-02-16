@@ -71,7 +71,9 @@ namespace sol {
 			return mem_variable_ptr;
 		}
 	} // namespace detail
+}
 
+CXX20_EXPORT namespace sol {
 	template <typename... Args, typename R>
 	inline constexpr auto resolve(R fun_ptr(Args...)) -> R (*)(Args...) {
 		return fun_ptr;

@@ -22,7 +22,7 @@
 
 # # # # sol2
 # # # Required minimum version statement
-cmake_minimum_required(VERSION 3.16.0)
+cmake_minimum_required(VERSION 3.28)
 # # # Project Include - file that is included after project declaration is finished
 set(CMAKE_PROJECT_INCLUDE "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Includes/Project.cmake")
 
@@ -100,6 +100,22 @@ target_include_directories(sol2 ${sol2-system-include}
 	INTERFACE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 	$<INSTALL_INTERFACE:include>)
+
+add_library(sol2_module STATIC)
+target_compile_features(sol2_module PUBLIC cxx_std_23)
+#target_compile_definitions(sol2_module PRIVATE COMPAT53_INCLUDE_SOURCE=0)
+target_compile_definitions(sol2_module PUBLIC COMPAT53_API=inline)
+target_link_options(sol2_module PUBLIC /OPT:NOICF /OPT:NOREF /Gy-)
+target_include_directories(sol2_module PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+#set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/include/sol/compatibility/compat-5.3.c.h PROPERTIES LANGUAGE CXX)
+target_sources(sol2_module
+		PUBLIC
+		FILE_SET cxx_modules TYPE CXX_MODULES FILES
+		${CMAKE_CURRENT_SOURCE_DIR}/include/sol/sol.module.ixx
+		PRIVATE
+		${sol2-sources}
+#		${CMAKE_CURRENT_SOURCE_DIR}/include/sol/compatibility/compat-5.3.c.h
+)
 
 # # Version configurations
 configure_package_config_file(
@@ -275,6 +291,7 @@ if (sol2-is-top-level-project)
 			IMPORTED_LOCATION ${lualiblocation})
 		set(LUA_LIBRARIES ${lualib})
 	endif()
+	target_link_libraries(sol2_module Lua::Lua)
 
 	if (NOT LUA_FOUND AND NOT LUABUILD_FOUND)
 		message(FATAL_ERROR "sol2 Lua \"${SOL2_LUA_VERSION}\" not found and could not be targeted for building")

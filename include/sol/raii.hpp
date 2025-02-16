@@ -99,7 +99,9 @@ namespace sol {
 			}
 		};
 	} // namespace detail
+}
 
+CXX20_EXPORT namespace sol {
 	template <typename... Args>
 	struct constructor_list { };
 

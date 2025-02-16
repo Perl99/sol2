@@ -32,7 +32,7 @@
 
 #include <vector>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 
 	template <typename Al = typename std::allocator<object>>
 	struct basic_variadic_results : public std::vector<object, Al> {

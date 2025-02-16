@@ -31,7 +31,7 @@
 #include <sol/thread.hpp>
 #include <sol/protected_handler.hpp>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 	template <typename Reference>
 	class basic_coroutine : public basic_object<Reference> {
 	private:

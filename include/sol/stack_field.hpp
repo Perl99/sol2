@@ -63,6 +63,10 @@ namespace sol { namespace stack {
 			;
 	} // namespace stack_detail
 
+}}
+
+CXX20_EXPORT namespace sol { namespace stack {
+
 	template <typename T, bool global, bool raw, typename>
 	struct field_getter {
 		static inline constexpr int default_table_index

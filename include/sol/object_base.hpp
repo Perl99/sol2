@@ -27,7 +27,7 @@
 #include <sol/reference.hpp>
 #include <sol/stack.hpp>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 
 	template <typename ref_t>
 	class basic_object_base : public ref_t {

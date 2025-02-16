@@ -27,7 +27,7 @@
 #include <cstddef>
 #include <utility>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 
 	using in_place_t = std::in_place_t;
 	constexpr std::in_place_t in_place {};

@@ -33,12 +33,14 @@
 #include <iostream>
 #endif
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 	// must push a single object to be the error object
 	// NOTE: the VAST MAJORITY of all Lua libraries -- C or otherwise -- expect a string for the type of error
 	// break this convention at your own risk
 	using exception_handler_function = int (*)(lua_State*, optional<const std::exception&>, string_view);
+}
 
+namespace sol {
 	namespace detail {
 		inline const char (&default_exception_handler_name())[11] {
 			static const char name[11] = "sol.\xE2\x98\xA2\xE2\x98\xA2";
@@ -200,7 +202,9 @@ namespace sol {
 			{ return static_trampoline<fx>(L); }
 		}
 	} // namespace detail
+}
 
+CXX20_EXPORT namespace sol {
 	inline void set_default_exception_handler(lua_State* L, exception_handler_function exf = &detail::default_exception_handler) {
 		static_assert(sizeof(void*) >= sizeof(exception_handler_function),
 		     "void* storage is too small to transport the exception handler: please file a bug on the sol2 issue tracker to get this looked at!");

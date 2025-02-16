@@ -30,7 +30,7 @@
 #include <cstdint>
 #include <cstddef>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 
 	template <typename Allocator = std::allocator<std::byte>>
 	class basic_bytecode : private std::vector<std::byte, Allocator> {

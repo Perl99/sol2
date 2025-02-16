@@ -29,7 +29,7 @@
 #include <utility>
 #include <tuple>
 
-namespace sol { namespace stack {
+CXX20_EXPORT namespace sol { namespace stack {
 	template <typename T, typename>
 	struct popper {
 		inline static decltype(auto) pop(lua_State* L) {

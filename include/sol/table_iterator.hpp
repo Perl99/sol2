@@ -27,7 +27,7 @@
 #include <sol/object.hpp>
 #include <iterator>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 
 	template <typename reference_type>
 	class basic_table_iterator {

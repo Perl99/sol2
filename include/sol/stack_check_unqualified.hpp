@@ -50,7 +50,9 @@ namespace sol { namespace stack {
 		}
 		return true;
 	}
+}}
 
+namespace sol { namespace stack {
 	namespace stack_detail {
 		inline bool impl_check_metatable(lua_State* L_, int index, const std::string& metakey, bool poptable) {
 			luaL_getmetatable(L_, &metakey[0]);
@@ -84,7 +86,9 @@ namespace sol { namespace stack {
 			}
 		};
 	} // namespace stack_detail
+}}
 
+CXX20_EXPORT namespace sol { namespace stack {
 	template <typename T, typename>
 	struct unqualified_interop_checker {
 		template <typename Handler>

@@ -28,11 +28,13 @@
 #include <sol/stack.hpp>
 #include <sol/object.hpp>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 
 	template <typename T>
 	struct usertype_container;
+}
 
+namespace sol {
 	namespace container_detail {
 
 		template <typename T>
@@ -1583,7 +1585,9 @@ namespace sol {
 		template <typename X>
 		struct usertype_container_default<usertype_container<X>> : usertype_container_default<X> { };
 	} // namespace container_detail
+}
 
+CXX20_EXPORT namespace sol {
 	template <typename T>
 	struct usertype_container : container_detail::usertype_container_default<T> { };
 

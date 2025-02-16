@@ -33,7 +33,7 @@
 #include <memory>
 #include <cstddef>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 
 	class state_view {
 	private:

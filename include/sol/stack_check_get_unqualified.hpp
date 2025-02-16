@@ -37,7 +37,7 @@
 #endif // variant shenanigans (thanks, Mac OSX)
 
 
-namespace sol { namespace stack {
+CXX20_EXPORT namespace sol { namespace stack {
 	template <typename T, typename>
 	struct unqualified_check_getter {
 		typedef decltype(stack_detail::unchecked_unqualified_get<T>(nullptr, -1, std::declval<record&>())) R;

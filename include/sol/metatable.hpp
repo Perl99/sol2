@@ -27,7 +27,7 @@
 #include <sol/table_core.hpp>
 #include <sol/usertype.hpp>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 
 	template <typename base_type>
 	class basic_metatable : public basic_table<base_type> {

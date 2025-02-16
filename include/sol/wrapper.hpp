@@ -32,6 +32,9 @@ namespace sol {
 		template <typename T>
 		using array_return_type = meta::conditional_t<std::is_array<T>::value, std::add_lvalue_reference_t<T>, T>;
 	}
+}
+
+CXX20_EXPORT namespace sol {
 
 	template <typename F, typename = void>
 	struct wrapper {

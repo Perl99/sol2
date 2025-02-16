@@ -28,7 +28,7 @@
 #include <sol/stack.hpp>
 #include <sol/ebco.hpp>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 	template <typename T>
 	struct as_returns_t : private detail::ebco<T> {
 	private:

@@ -30,7 +30,7 @@
 #include <cstddef>
 #include <string>
 
-namespace sol::utility {
+CXX20_EXPORT namespace sol::utility {
 
 	// Converts any object into a string using luaL_tolstring.
 	//

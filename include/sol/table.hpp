@@ -28,7 +28,7 @@
 #include <sol/lua_table.hpp>
 #include <sol/usertype.hpp>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 	typedef table_core<false> table;
 
 	template <bool is_global, typename base_type>

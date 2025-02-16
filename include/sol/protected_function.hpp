@@ -53,7 +53,9 @@ namespace sol {
 			}
 		}
 	} // namespace detail
+}
 
+CXX20_EXPORT namespace sol {
 	template <typename Reference, bool Aligned = false, typename Handler = reference>
 	class basic_protected_function : public basic_object<Reference> {
 	private:

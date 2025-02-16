@@ -117,6 +117,9 @@ namespace sol { namespace stack {
 		}
 	} // namespace stack_detail
 
+}}
+
+CXX20_EXPORT namespace sol { namespace stack {
 	template <typename T, typename>
 	struct unqualified_getter {
 		static decltype(auto) get(lua_State* L, int index, record& tracking) {

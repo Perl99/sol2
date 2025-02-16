@@ -28,7 +28,7 @@
 #include <limits>
 #include <iterator>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 	template <typename proxy_t, bool is_const>
 	struct stack_iterator {
 		typedef meta::conditional_t<is_const, const proxy_t, proxy_t> reference;

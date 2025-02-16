@@ -26,7 +26,7 @@
 
 #include <sol/stack_proxy_base.hpp>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 	struct stack_proxy : public stack_proxy_base {
 	public:
 		stack_proxy() : stack_proxy_base() {

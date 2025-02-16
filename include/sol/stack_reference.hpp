@@ -37,7 +37,9 @@ namespace sol {
 			return leftregistry == rightregistry;
 		}
 	} // namespace detail
+}
 
+CXX20_EXPORT namespace sol {
 	class stateless_stack_reference {
 	private:
 		friend class stack_reference;

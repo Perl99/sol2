@@ -32,7 +32,7 @@
 #include <sol/stack_proxy.hpp>
 #include <cstdint>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 	struct unsafe_function_result : public proxy_base<unsafe_function_result> {
 	private:
 		lua_State* L;

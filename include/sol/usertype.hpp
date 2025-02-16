@@ -30,7 +30,7 @@
 #include <sol/usertype_proxy.hpp>
 #include <sol/metatable.hpp>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 
 	template <typename T, typename base_type>
 	class basic_usertype : private basic_metatable<base_type> {

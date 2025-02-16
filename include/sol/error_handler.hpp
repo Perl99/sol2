@@ -57,6 +57,9 @@ namespace sol {
 		}
 	} // namespace detail
 
+}
+
+CXX20_EXPORT namespace sol {
 	inline std::string associated_type_name(lua_State* L, int index, type t) {
 		switch (t) {
 		case type::poly:
@@ -113,7 +116,7 @@ namespace sol {
 		}
 	};
 
-	const type_panic_t type_panic = {};
+	constexpr type_panic_t type_panic = {};
 
 	struct constructor_handler {
 		int operator()(lua_State* L, int index, type expected, type actual, string_view message) const noexcept(false) {

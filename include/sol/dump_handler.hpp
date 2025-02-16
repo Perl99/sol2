@@ -29,7 +29,7 @@
 #include <cstdint>
 #include <exception>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 
 	class dump_error : public error {
 	private:

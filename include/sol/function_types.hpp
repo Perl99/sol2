@@ -273,6 +273,9 @@ namespace sol {
 		}
 	} // namespace function_detail
 
+}
+
+CXX20_EXPORT namespace sol {
 	namespace stack {
 		template <typename... Sigs>
 		struct unqualified_pusher<function_sig<Sigs...>> {
@@ -708,6 +711,9 @@ namespace sol {
 			}
 		};
 
+}}
+
+namespace sol { namespace stack {
 		namespace stack_detail {
 			template <typename Function, typename Handler>
 			bool check_function_pointer(lua_State* L, int index, Handler&& handler, record& tracking) noexcept {

@@ -42,7 +42,7 @@
 #endif // variant is weird on XCode, thanks XCode
 
 
-namespace sol { namespace meta {
+CXX20_EXPORT namespace sol { namespace meta {
 	template <typename T>
 	struct unwrapped {
 		typedef T type;
@@ -148,6 +148,11 @@ namespace sol { namespace meta {
 	template <typename V, typename Vs1, typename... Vs>
 	struct find_in_pack_v<V, Vs1, Vs...> : any<boolean<(V::value == Vs1::value)>, find_in_pack_v<V, Vs...>> { };
 
+}}
+
+namespace sol {
+	namespace meta {
+
 	namespace meta_detail {
 		template <std::size_t I, typename T, typename... Args>
 		struct index_in_pack : std::integral_constant<std::size_t, SIZE_MAX> { };
@@ -156,7 +161,9 @@ namespace sol { namespace meta {
 		struct index_in_pack<I, T, T1, Args...>
 		: conditional_t<std::is_same<T, T1>::value, std::integral_constant<std::ptrdiff_t, I>, index_in_pack<I + 1, T, Args...>> { };
 	} // namespace meta_detail
+}}
 
+CXX20_EXPORT namespace sol { namespace meta {
 	template <typename T, typename... Args>
 	struct index_in_pack : meta_detail::index_in_pack<0, T, Args...> { };
 
@@ -179,7 +186,9 @@ namespace sol { namespace meta {
 	struct at_in_pack<0, Arg, Args...> {
 		typedef Arg type;
 	};
+}}
 
+namespace sol { namespace meta {
 	namespace meta_detail {
 		template <typename, typename TI>
 		using on_even = meta::boolean<(TI::value % 2) == 0>;
@@ -199,7 +208,9 @@ namespace sol { namespace meta {
 			     count_when_for_pack<When, Limit - static_cast<std::size_t>(When<T, std::integral_constant<std::size_t, I>>::value),
 			          I + static_cast<std::size_t>(When<T, std::integral_constant<std::size_t, I>>::value&& Pred<T>::value), Pred, Ts...>> { };
 	} // namespace meta_detail
+}}
 
+CXX20_EXPORT namespace sol { namespace meta {
 	template <template <typename...> class Pred, typename... Ts>
 	struct count_for_pack : meta_detail::count_when_for_pack<meta_detail::on_always, sizeof...(Ts), 0, Pred, Ts...> { };
 
@@ -253,7 +264,9 @@ namespace sol { namespace meta {
 
 	template <typename... Args>
 	using return_type_t = typename return_type<Args...>::type;
+}}
 
+namespace sol { namespace meta {
 	namespace meta_detail {
 		template <typename>
 		struct always_true : std::true_type { };
@@ -264,12 +277,16 @@ namespace sol { namespace meta {
 			static std::false_type test(...);
 		};
 	} // namespace meta_detail
+}}
 
+CXX20_EXPORT namespace sol { namespace meta {
 	template <typename T>
 	struct is_invokable;
 	template <typename Fun, typename... Args>
 	struct is_invokable<Fun(Args...)> : decltype(meta_detail::is_invokable_tester::test<Fun, Args...>(0)) { };
+}}
 
+namespace sol { namespace meta {
 	namespace meta_detail {
 
 		template <typename T, typename = void>
@@ -534,7 +551,9 @@ namespace sol { namespace meta {
 		template <typename T>
 		using detect_sentinel = typename T::sentinel;
 	} // namespace meta_detail
+}}
 
+CXX20_EXPORT namespace sol { namespace meta {
 	template <typename T, typename Fallback>
 	class sentinel_or {
 	public:
@@ -718,7 +737,9 @@ namespace sol { namespace meta {
 
 	template <typename T>
 	using is_not_move_only = neg<is_move_only<T>>;
+}}
 
+namespace sol { namespace meta {
 	namespace meta_detail {
 		template <typename T>
 		decltype(auto) force_tuple(T&& x) {
@@ -730,7 +751,9 @@ namespace sol { namespace meta {
 			}
 		}
 	} // namespace meta_detail
+}}
 
+CXX20_EXPORT namespace sol { namespace meta {
 	template <typename... X>
 	decltype(auto) tuplefy(X&&... x) {
 		return std::tuple_cat(meta_detail::force_tuple(std::forward<X>(x))...);

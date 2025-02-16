@@ -102,7 +102,9 @@ namespace sol { namespace stack {
 			return 0;
 		}
 	} // namespace stack_detail
+}}
 
+CXX20_EXPORT namespace sol { namespace stack {
 	inline int push_environment_of(lua_State* L, int target_index = -1) {
 #if SOL_IS_ON(SOL_SAFE_STACK_CHECK)
 		luaL_checkstack(L, 1, detail::not_enough_stack_space_environment);
@@ -234,7 +236,9 @@ namespace sol { namespace stack {
 			return stack::push(L, detail::ptr(obj));
 		}
 	};
+}}
 
+namespace sol { namespace stack {
 	namespace stack_detail {
 		template <typename T>
 		struct uu_pusher {
@@ -280,7 +284,9 @@ namespace sol { namespace stack {
 			}
 		};
 	} // namespace stack_detail
+}}
 
+CXX20_EXPORT namespace sol { namespace stack {
 	template <typename T>
 	struct unqualified_pusher<detail::as_unique_tag<T>> {
 		template <typename... Args>
@@ -1353,6 +1359,9 @@ namespace sol { namespace stack {
 		}
 	};
 
+}}
+
+namespace sol { namespace stack {
 #if SOL_IS_ON(SOL_STD_VARIANT)
 	namespace stack_detail {
 
@@ -1370,6 +1379,9 @@ namespace sol { namespace stack {
 
 	} // namespace stack_detail
 
+}}
+
+CXX20_EXPORT namespace sol { namespace stack {
 	template <typename... Tn>
 	struct unqualified_pusher<std::variant<Tn...>> {
 		static int push(lua_State* L, const std::variant<Tn...>& v) {

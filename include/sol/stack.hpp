@@ -87,7 +87,9 @@ namespace sol {
 			clear_entries(ref);
 		}
 	} // namespace detail
+}
 
+namespace sol {
 	namespace stack {
 		namespace stack_detail {
 			template <typename T>
@@ -214,7 +216,11 @@ namespace sol {
 			}
 
 		} // namespace stack_detail
+	}
+}
 
+CXX20_EXPORT namespace sol {
+	namespace stack {
 		template <typename T>
 		int set_ref(lua_State* L, T&& arg, int tableindex = -2) {
 			int push_count = push(L, std::forward<T>(arg));

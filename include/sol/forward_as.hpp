@@ -29,7 +29,7 @@
 #include <utility>
 #include <type_traits>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 	template <typename T, typename U>
 	constexpr decltype(auto) forward_as(U&& value) noexcept {
 		if constexpr (::std::is_lvalue_reference_v<T>) {

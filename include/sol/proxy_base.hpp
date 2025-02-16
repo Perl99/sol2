@@ -28,7 +28,7 @@
 #include <sol/tuple.hpp>
 #include <sol/stack.hpp>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 	struct proxy_base_tag { };
 
 	namespace detail {

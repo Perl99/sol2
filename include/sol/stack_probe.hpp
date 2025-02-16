@@ -28,7 +28,7 @@
 #include <sol/stack_field.hpp>
 #include <sol/stack_check.hpp>
 
-namespace sol { namespace stack {
+CXX20_EXPORT namespace sol { namespace stack {
 	template <typename T, typename P, bool b, bool raw, typename>
 	struct probe_field_getter {
 		template <typename Key>

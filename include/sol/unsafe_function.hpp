@@ -33,7 +33,7 @@
 #include <sol/dump_handler.hpp>
 #include <cstdint>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 	template <typename ref_t, bool aligned = false>
 	class basic_function : public basic_object<ref_t> {
 	private:

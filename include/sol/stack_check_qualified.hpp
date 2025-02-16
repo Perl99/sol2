@@ -26,7 +26,7 @@
 
 #include <sol/stack_check_unqualified.hpp>
 
-namespace sol { namespace stack {
+CXX20_EXPORT namespace sol { namespace stack {
 
 	template <typename X, type expected, typename>
 	struct qualified_checker {

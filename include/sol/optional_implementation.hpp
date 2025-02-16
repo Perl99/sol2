@@ -117,7 +117,7 @@ namespace sol { namespace detail {
 #define SOL_TL_OPTIONAL_11_CONSTEXPR constexpr
 #endif
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 #ifndef SOL_TL_MONOSTATE_INPLACE_MUTEX
 #define SOL_TL_MONOSTATE_INPLACE_MUTEX
 	/// \brief Used to represent an optional with no data; essentially a bool
@@ -127,6 +127,9 @@ namespace sol {
 	template <class T>
 	class optional;
 
+}
+
+namespace sol {
 	/// \exclude
 	namespace detail {
 #ifndef SOL_TL_TRAITS_MUTEX
@@ -639,7 +642,9 @@ namespace sol {
 		};
 
 	} // namespace detail
+}
 
+CXX20_EXPORT namespace sol {
 	/// \brief A tag type to represent an empty optional
 	using nullopt_t = std::nullopt_t;
 
@@ -1633,6 +1638,9 @@ namespace sol {
 	optional(T) -> optional<T>;
 #endif
 
+}
+
+namespace sol {
 	/// \exclude
 	namespace detail {
 #ifdef SOL_TL_OPTIONAL_CXX14
@@ -1673,7 +1681,9 @@ namespace sol {
 		}
 #endif
 	} // namespace detail
+}
 
+CXX20_EXPORT namespace sol {
 	/// Specialization for when `T` is a reference. `optional<T&>` acts similarly
 	/// to a `T*`, but provides more operations and shows intent more clearly.
 	///
@@ -2288,7 +2298,7 @@ namespace sol {
 
 } // namespace sol
 
-namespace std {
+CXX20_EXPORT namespace std {
 	// TODO SFINAE
 	template <class T>
 	struct hash<::sol::optional<T>> {

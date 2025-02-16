@@ -26,7 +26,7 @@
 
 #include <sol/table.hpp>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 
 	template <typename base_type>
 	struct basic_environment : basic_table<base_type> {

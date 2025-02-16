@@ -28,7 +28,7 @@
 #include <sol/reference.hpp>
 #include <sol/make_reference.hpp>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 	struct lua_value {
 	public:
 		struct arr : detail::ebco<std::initializer_list<lua_value>> {

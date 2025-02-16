@@ -29,7 +29,7 @@
 #include <sol/stack.hpp>
 #include <sol/state_view.hpp>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 	struct lua_thread_state {
 		lua_State* L;
 

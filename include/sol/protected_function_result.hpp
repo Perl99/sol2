@@ -34,7 +34,7 @@
 #include <sol/stack.hpp>
 #include <cstdint>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 	struct protected_function_result : public proxy_base<protected_function_result> {
 	private:
 		lua_State* L;

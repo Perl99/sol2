@@ -91,10 +91,15 @@ namespace sol {
 		};
 
 	}} // namespace meta::meta_detail
+}
+
+CXX20_EXPORT namespace sol {
 
 	template <typename T>
 	using unique_usertype_actual_t = typename meta::meta_detail::unique_actual_type<unique_usertype_traits<T>>::type;
+}
 
+namespace sol {
 	namespace meta { namespace meta_detail {
 		template <typename T>
 		using value_test_t = decltype(T::value);
@@ -126,7 +131,9 @@ namespace sol {
 		template <typename T>
 		struct unique_valid<T, meta::void_t<decltype(T::value)>> : std::integral_constant<bool, T::value> { };
 	}} // namespace meta::meta_detail
+}
 
+CXX20_EXPORT namespace sol {
 	template <typename T>
 	using unique_usertype_element_t = typename meta::meta_detail::unique_element_type<unique_usertype_traits<T>>::type;
 
@@ -141,7 +148,9 @@ namespace sol {
 
 	template <typename T>
 	inline constexpr bool is_unique_usertype_v = is_unique_usertype<T>::value;
+}
 
+namespace sol {
 	namespace meta { namespace meta_detail {
 		template <typename T>
 		using adl_sol_lua_check_access_test_t
@@ -228,7 +237,9 @@ namespace sol {
 		struct is_actual_type_rebindable_for_test<T, Element, true>
 		: std::integral_constant<bool, !std::is_void_v<typename T::template rebind_actual_type<Element>>> { };
 	}} // namespace meta::meta_detail
+}
 
+CXX20_EXPORT namespace sol {
 	template <typename T, typename Element = void>
 	using is_actual_type_rebindable_for = typename meta::meta_detail::is_actual_type_rebindable_for_test<unique_usertype_traits<T>, Element>::type;
 

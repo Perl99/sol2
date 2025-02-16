@@ -122,6 +122,10 @@ namespace sol { namespace stack {
 			}
 		}
 	} // namespace stack_detail
+	}
+}
+
+CXX20_EXPORT namespace sol { namespace stack {
 
 #if SOL_IS_ON(SOL_COMPILER_GCC)
 #pragma GCC diagnostic pop

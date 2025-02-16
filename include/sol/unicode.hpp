@@ -4,7 +4,7 @@
 #include <array>
 #include <cstring>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 	// Everything here was lifted pretty much straight out of
 	// ogonek, because fuck figuring it out=
 	namespace unicode {
@@ -42,7 +42,11 @@ namespace sol {
 			std::size_t code_units_size;
 			std::array<C, 4> code_units;
 		};
+	}
+}
 
+namespace sol {
+	namespace unicode {
 		struct unicode_detail {
 			// codepoint related
 			static constexpr char32_t last_code_point = 0x10FFFF;
@@ -123,7 +127,11 @@ namespace sol {
 				return normalizing_value + ((hi << lead_shifted_bits) | lo);
 			}
 		};
+	}
+}
 
+CXX20_EXPORT namespace sol {
+	namespace unicode {
 		inline encoded_result<char> code_point_to_utf8(char32_t codepoint) {
 			encoded_result<char> er;
 			er.error = error_code::ok;

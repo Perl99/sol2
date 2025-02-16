@@ -30,7 +30,7 @@
 #include <limits>
 #include <iterator>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 	struct variadic_args {
 	private:
 		lua_State* L;

@@ -85,7 +85,9 @@ namespace sol {
 		struct yield_tag_t { };
 		inline constexpr yield_tag_t yield_tag {};
 	} // namespace detail
+}
 
+CXX20_EXPORT namespace sol {
 	struct lua_nil_t { };
 	inline constexpr lua_nil_t lua_nil {};
 	inline bool operator==(lua_nil_t, lua_nil_t) {
@@ -98,11 +100,15 @@ namespace sol {
 	using nil_t = lua_nil_t;
 	inline constexpr const nil_t& nil = lua_nil;
 #endif
+}
 
+namespace sol {
 	namespace detail {
 		struct non_lua_nil_t { };
 	} // namespace detail
+}
 
+CXX20_EXPORT namespace sol {
 	struct metatable_key_t { };
 	inline constexpr metatable_key_t metatable_key {};
 
@@ -574,7 +580,9 @@ namespace sol {
 	constexpr inline update_if_empty_t update_if_empty = update_if_empty_t();
 	struct create_if_nil_t { };
 	constexpr inline create_if_nil_t create_if_nil = create_if_nil_t();
+}
 
+namespace sol {
 	namespace detail {
 		enum insert_mode { none = 0x0, update_if_empty = 0x01, override_value = 0x02, create_if_nil = 0x04 };
 
@@ -585,7 +593,9 @@ namespace sol {
 		template <typename T, typename...>
 		using is_not_insert_mode = meta::neg<is_insert_mode<T>>;
 	} // namespace detail
+}
 
+CXX20_EXPORT namespace sol {
 	struct this_state {
 		lua_State* L;
 
@@ -974,7 +984,9 @@ namespace sol {
 
 	template <typename T>
 	inline constexpr bool is_callable_v = is_callable<T>::value;
+}
 
+namespace sol {
 	namespace detail {
 		template <typename T, typename = void>
 		struct lua_type_of : std::integral_constant<type, type::userdata> { };
@@ -1215,7 +1227,9 @@ namespace sol {
 		template <typename C, C v, template <typename...> class V, typename... Args>
 		struct accumulate_list<C, v, V, types<Args...>> : accumulate<C, v, V, Args...> { };
 	} // namespace detail
+}
 
+CXX20_EXPORT namespace sol {
 	template <typename T>
 	struct lua_type_of : detail::lua_type_of<T> {
 		typedef int SOL_INTERNAL_UNSPECIALIZED_MARKER_;
@@ -1237,7 +1251,9 @@ namespace sol {
 
 	template <typename T>
 	inline constexpr int lua_size_v = lua_size<T>::value;
+}
 
+namespace sol {
 	namespace detail {
 		// MSVC's decltype detection is broken, which breaks other
 		// parts of the code. So we add more workarounds. The moment it's fixed,
@@ -1250,7 +1266,9 @@ namespace sol {
 		template <typename T>
 		inline constexpr bool is_msvc_callable_rigged_v = is_msvc_callable_rigged<T>::value;
 	} // namespace detail
+}
 
+CXX20_EXPORT namespace sol {
 	template <typename T>
 	struct is_lua_primitive : std::integral_constant<bool,
 	                               type::userdata != lua_type_of_v<T>                                   // cf
@@ -1430,7 +1448,9 @@ namespace sol {
 	inline type type_of() {
 		return lua_type_of<meta::unqualified_t<T>>::value;
 	}
+}
 
+namespace sol {
 	namespace detail {
 		template <typename T>
 		struct is_non_factory_constructor : std::false_type { };
@@ -1480,7 +1500,9 @@ namespace sol {
 		template <typename... Args>
 		inline constexpr bool any_is_destructor_v = any_is_destructor<Args...>::value;
 	} // namespace detail
+}
 
+CXX20_EXPORT namespace sol {
 	template <typename T>
 	using is_lua_c_function = meta::any<std::is_same<lua_CFunction, T>, std::is_same<detail::lua_CFunction_noexcept, T>, std::is_same<lua_CFunction_ref, T>>;
 

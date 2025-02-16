@@ -27,7 +27,7 @@
 #include <sol/object_base.hpp>
 #include <sol/table.hpp>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 	template <typename base_type>
 	class basic_userdata : public basic_table<base_type> {
 	private:

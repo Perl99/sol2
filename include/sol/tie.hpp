@@ -26,7 +26,7 @@
 
 #include <sol/traits.hpp>
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 
 	namespace detail {
 		template <typename T>

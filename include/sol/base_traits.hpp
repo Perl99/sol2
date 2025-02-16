@@ -29,9 +29,11 @@
 namespace sol {
 	namespace detail {
 		struct unchecked_t { };
-		const unchecked_t unchecked = unchecked_t {};
+		constexpr unchecked_t unchecked = unchecked_t {};
 	} // namespace detail
+}
 
+CXX20_EXPORT namespace sol {
 	namespace meta {
 		using sfinae_yes_t = std::true_type;
 		using sfinae_no_t = std::false_type;

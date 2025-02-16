@@ -34,13 +34,20 @@ namespace sol {
 	namespace detail {
 		using swallow = std::initializer_list<int>;
 	} // namespace detail
+}
 
+CXX20_EXPORT namespace sol {
 	namespace meta {
 		template <typename T>
 		using is_tuple = is_specialization_of<T, std::tuple>;
 
 		template <typename T>
 		constexpr inline bool is_tuple_v = is_tuple<T>::value;
+	}
+}
+
+namespace sol {
+	namespace meta {
 
 		namespace detail {
 			template <typename... Args>
@@ -53,7 +60,11 @@ namespace sol {
 				typedef types<Args...> type;
 			};
 		} // namespace detail
+	}
+}
 
+CXX20_EXPORT namespace sol {
+	namespace meta {
 		template <typename... Args>
 		using tuple_types = typename detail::tuple_types_<Args...>::type;
 

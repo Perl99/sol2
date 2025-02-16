@@ -26,7 +26,7 @@
 
 #include <sol/object.hpp>
 
-namespace sol::utility {
+CXX20_EXPORT namespace sol::utility {
 
 	// Returns true if the object is represented by an integer,
 	// not a floating point number or any other type.

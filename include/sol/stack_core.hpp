@@ -542,7 +542,9 @@ namespace sol {
 			}
 		};
 	} // namespace detail
+}
 
+CXX20_EXPORT namespace sol {
 	namespace stack {
 
 		template <typename T, bool global = false, bool raw = false, typename = void>
@@ -602,7 +604,11 @@ namespace sol {
 				used += count;
 			}
 		};
+	}
+}
 
+namespace sol {
+	namespace stack {
 		namespace stack_detail {
 			template <typename Function>
 			Function* get_function_pointer(lua_State*, int, record&) noexcept;
@@ -611,7 +617,9 @@ namespace sol {
 		} // namespace stack_detail
 
 	} // namespace stack
+}
 
+namespace sol {
 	namespace meta { namespace meta_detail {
 		template <typename T>
 		using adl_sol_lua_get_test_t = decltype(sol_lua_get(types<T>(), static_cast<lua_State*>(nullptr), -1, std::declval<stack::record&>()));
@@ -659,7 +667,9 @@ namespace sol {
 		inline constexpr bool is_adl_sol_lua_push_exact_v = meta::is_detected_v<adl_sol_lua_push_exact_test_t, T, Args...>;
 	}} // namespace meta::meta_detail
 
+}
 
+namespace sol {
 	namespace stack {
 		namespace stack_detail {
 			constexpr const char* not_enough_stack_space = "not enough space left on Lua stack";
@@ -794,7 +804,11 @@ namespace sol {
 				}
 			};
 		} // namespace stack_detail
+	}
+}
 
+CXX20_EXPORT namespace sol {
+	namespace stack {
 		inline bool maybe_indexable(lua_State* L, int index = -1) {
 			type t = type_of(L, index);
 			return t == type::userdata || t == type::table;
@@ -915,7 +929,11 @@ namespace sol {
 			     meta::conditional_t<is_unique_usertype_v<U>, detail::as_unique_tag<U>, detail::as_value_tag<U>>>;
 			return stack::push<Tr>(L, std::forward<Arg>(arg), std::forward<Args>(args)...);
 		}
+	}
+}
 
+namespace sol {
+	namespace stack {
 		namespace stack_detail {
 
 			template <typename T, typename Arg, typename... Args>
@@ -937,7 +955,11 @@ namespace sol {
 			}
 
 		} // namespace stack_detail
+	}
+}
 
+CXX20_EXPORT  namespace sol {
+	namespace stack {
 		template <typename T, typename... Args>
 		int push_reference(lua_State* L, T&& t, Args&&... args) {
 			return stack_detail::push_reference<T>(L, std::forward<T>(t), std::forward<Args>(args)...);
@@ -1096,6 +1118,11 @@ namespace sol {
 			return check_get<T>(L, index, handler);
 		}
 
+	}
+}
+
+namespace sol {
+	namespace stack {
 		namespace stack_detail {
 
 			template <typename Handler>
@@ -1116,7 +1143,11 @@ namespace sol {
 			}
 
 		} // namespace stack_detail
+	}
+}
 
+CXX20_EXPORT namespace sol {
+	namespace stack {
 		template <typename... Args, typename Handler>
 		bool multi_check(lua_State* L, int index, Handler&& handler, record& tracking) {
 			return stack_detail::check_types<Args...>(L, index, std::forward<Handler>(handler), tracking);
@@ -1277,7 +1308,11 @@ namespace sol {
 			using Tu = meta::unqualified_t<T>;
 			modify_unique_usertype_as<Tu>(obj, std::forward<F>(f));
 		}
+	}
+}
 
+namespace sol {
+	namespace stack {
 		namespace stack_detail {
 			template <typename T, typename Handler>
 			decltype(auto) check_get_arg(lua_State* L_, int index_, Handler&& handler_, record& tracking_) {
@@ -1436,6 +1471,10 @@ namespace sol {
 		struct get_is_primitive<T, true, true> : get_is_primitive<T, true, false> { };
 
 	} // namespace detail
+
+}
+
+CXX20_EXPORT namespace sol {
 
 	template <typename T>
 	struct is_proxy_primitive

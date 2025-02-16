@@ -38,7 +38,7 @@ struct lua_State;
 }
 #endif // C++ Mangling for Lua vs. Not
 
-namespace sol {
+CXX20_EXPORT namespace sol {
 
 	enum class type;
 

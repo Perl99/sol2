@@ -36,7 +36,9 @@ namespace sol {
 			return name;
 		}
 	} // namespace detail
+}
 
+CXX20_EXPORT namespace sol {
 	namespace stack {
 		inline void remove(lua_State* L_, int rawindex, int count) {
 			if (count < 1)
@@ -236,7 +238,9 @@ namespace sol {
 		return Lmain;
 #endif // Lua 5.2+ has the main thread unqualified_getter
 	}
+}
 
+namespace sol {
 	namespace detail {
 		struct no_safety_tag {
 		} inline constexpr no_safety {};
@@ -251,7 +255,9 @@ namespace sol {
 			return L_;
 		}
 	} // namespace detail
+}
 
+CXX20_EXPORT namespace sol {
 	class stateless_reference {
 	private:
 		template <bool o_main_only>
