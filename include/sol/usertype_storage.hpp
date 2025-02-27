@@ -26,6 +26,7 @@
 
 #include <sol/usertype_core.hpp>
 #include <sol/make_reference.hpp>
+#include <sol/trampoline.hpp>
 
 #include <bitset>
 #include <unordered_map>
@@ -98,7 +99,7 @@ namespace sol { namespace u_detail {
 
 		template <bool is_index = true, bool is_variable = false>
 		static inline int call(lua_State* L_) {
-			int r = detail::typed_static_trampoline<decltype(&call_<is_index, is_variable>), (&call_<is_index, is_variable>)>(L_);
+			int r = detail::lua_cfunction_trampoline(L_, &call_<is_index, is_variable>);
 			if constexpr (meta::is_specialization_of_v<uF, yielding_t>) {
 				return lua_yield(L_, r);
 			}
@@ -139,7 +140,7 @@ namespace sol { namespace u_detail {
 
 		template <bool is_index = true, bool is_variable = false>
 		static inline int index_call(lua_State* L_) {
-			int r = detail::typed_static_trampoline<decltype(&index_call_<is_index, is_variable>), (&index_call_<is_index, is_variable>)>(L_);
+			int r = detail::lua_cfunction_trampoline(L_, &index_call_<is_index, is_variable>);
 			if constexpr (meta::is_specialization_of_v<uF, yielding_t>) {
 				return lua_yield(L_, r);
 			}
@@ -641,22 +642,22 @@ namespace sol { namespace u_detail {
 
 		template <bool is_new_index>
 		static inline int index_call(lua_State* L) {
-			return detail::static_trampoline<&index_call_<is_new_index, false>>(L);
+			return detail::lua_cfunction_trampoline(L, &index_call_<is_new_index, false>);
 		}
 
 		template <bool is_new_index, typename... Bases>
 		static inline int index_call_with_bases(lua_State* L) {
-			return detail::static_trampoline<&index_call_with_bases_<is_new_index, false, Bases...>>(L);
+			return detail::lua_cfunction_trampoline(L, &index_call_with_bases_<is_new_index, false, Bases...>);
 		}
 
 		template <bool is_new_index>
 		static inline int meta_index_call(lua_State* L) {
-			return detail::static_trampoline<&index_call_<is_new_index, true>>(L);
+			return detail::lua_cfunction_trampoline(L, &index_call_<is_new_index, true>);
 		}
 
 		template <bool is_new_index, typename... Bases>
 		static inline int meta_index_call_with_bases(lua_State* L) {
-			return detail::static_trampoline<&index_call_with_bases_<is_new_index, true, Bases...>>(L);
+			return detail::lua_cfunction_trampoline(L, &index_call_with_bases_<is_new_index, true, Bases...>);
 		}
 
 		template <typename Key, typename Value>

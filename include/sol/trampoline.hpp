@@ -78,6 +78,10 @@ namespace sol {
 			return f(L);
 		}
 
+		inline int lua_cfunction_trampoline(lua_State* L, lua_CFunction f) {
+			return f(L);
+		}
+
 #if SOL_IS_ON(SOL_USE_NOEXCEPT_FUNCTION_TYPE)
 		template <lua_CFunction_noexcept f>
 		int static_trampoline_noexcept(lua_State* L) noexcept {
@@ -198,7 +202,7 @@ namespace sol {
 			}
 			else
 #endif
-			{ return static_trampoline<fx>(L); }
+			{ return lua_cfunction_trampoline(L, fx); }
 		}
 	} // namespace detail
 
