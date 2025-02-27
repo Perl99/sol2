@@ -55,7 +55,7 @@ namespace sol { namespace function_detail {
 			else {
 				nr = detail::typed_static_trampoline<decltype(&real_call), (&real_call)>(L);
 			}
-			if (is_yielding) {
+			if constexpr (is_yielding) {
 				return lua_yield(L, nr);
 			}
 			else {
@@ -101,7 +101,7 @@ namespace sol { namespace function_detail {
 			else {
 				nr = detail::typed_static_trampoline<decltype(&real_call), (&real_call)>(L);
 			}
-			if (is_yielding) {
+			if constexpr (is_yielding) {
 				return lua_yield(L, nr);
 			}
 			else {
@@ -166,7 +166,7 @@ namespace sol { namespace function_detail {
 			else {
 				nr = detail::typed_static_trampoline<decltype(&real_call), (&real_call)>(L);
 			}
-			if (is_yielding) {
+			if constexpr (is_yielding) {
 				return lua_yield(L, nr);
 			}
 			else {
@@ -229,7 +229,7 @@ namespace sol { namespace function_detail {
 			else {
 				nr = detail::typed_static_trampoline<decltype(&real_call), (&real_call)>(L);
 			}
-			if (is_yielding) {
+			if constexpr (is_yielding) {
 				return lua_yield(L, nr);
 			}
 			else {
@@ -281,7 +281,7 @@ namespace sol { namespace function_detail {
 			else {
 				nr = detail::typed_static_trampoline<decltype(&real_call), (&real_call)>(L);
 			}
-			if (is_yielding) {
+			if constexpr (is_yielding) {
 				return lua_yield(L, nr);
 			}
 			else {
@@ -328,7 +328,7 @@ namespace sol { namespace function_detail {
 			else {
 				nr = detail::typed_static_trampoline<decltype(&real_call), (&real_call)>(L);
 			}
-			if (is_yielding) {
+			if constexpr (is_yielding) {
 				return lua_yield(L, nr);
 			}
 			else {
@@ -368,7 +368,7 @@ namespace sol { namespace function_detail {
 			else {
 				nr = detail::typed_static_trampoline<decltype(&real_call), (&real_call)>(L);
 			}
-			if (is_yielding) {
+			if constexpr (is_yielding) {
 				return lua_yield(L, nr);
 			}
 			else {

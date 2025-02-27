@@ -56,23 +56,23 @@ namespace sol { namespace meta {
 		template <bool it_is_noexcept, bool has_c_variadic, typename T, typename R, typename... Args>
 		struct basic_traits {
 		private:
-			using first_type = meta::conditional_t<std::is_void<T>::value, int, T>&;
+			using first_type = meta::conditional_t<std::is_void_v<T>, int, T>&;
 
 		public:
 			inline static constexpr const bool is_noexcept = it_is_noexcept;
-			inline static constexpr bool is_member_function = std::is_void<T>::value;
+			inline static constexpr bool is_member_function = std::is_void_v<T>;
 			inline static constexpr bool has_c_var_arg = has_c_variadic;
 			inline static constexpr std::size_t arity = sizeof...(Args);
-			inline static constexpr std::size_t free_arity = sizeof...(Args) + static_cast<std::size_t>(!std::is_void<T>::value);
+			inline static constexpr std::size_t free_arity = sizeof...(Args) + static_cast<std::size_t>(!std::is_void_v<T>);
 			typedef types<Args...> args_list;
 			typedef std::tuple<Args...> args_tuple;
 			typedef T object_type;
 			typedef R return_type;
 			typedef tuple_types<R> returns_list;
 			typedef R(function_type)(Args...);
-			typedef meta::conditional_t<std::is_void<T>::value, args_list, types<first_type, Args...>> free_args_list;
-			typedef meta::conditional_t<std::is_void<T>::value, R(Args...), R(first_type, Args...)> free_function_type;
-			typedef meta::conditional_t<std::is_void<T>::value, R (*)(Args...), R (*)(first_type, Args...)> free_function_pointer_type;
+			typedef meta::conditional_t<std::is_void_v<T>, args_list, types<first_type, Args...>> free_args_list;
+			typedef meta::conditional_t<std::is_void_v<T>, R(Args...), R(first_type, Args...)> free_function_type;
+			typedef meta::conditional_t<std::is_void_v<T>, R (*)(Args...), R (*)(first_type, Args...)> free_function_pointer_type;
 			typedef std::remove_pointer_t<free_function_pointer_type> signature_type;
 			template <std::size_t i>
 			using arg_at = void_tuple_element_t<i, args_tuple>;
@@ -497,7 +497,7 @@ namespace sol { namespace meta {
 		template <typename Signature>
 		struct fx_traits<Signature, true> : public fx_traits<typename fx_traits<decltype(&Signature::operator())>::function_type, false> { };
 
-		template <typename Signature, bool b = std::is_member_object_pointer<Signature>::value>
+		template <typename Signature, bool b = std::is_member_object_pointer_v<Signature>>
 		struct callable_traits : public fx_traits<std::decay_t<Signature>> { };
 
 		template <typename R, typename T>

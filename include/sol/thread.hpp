@@ -134,7 +134,7 @@ namespace sol {
 			constructor_handler handler {};
 			stack::check<basic_thread>(lua_state(), -1, handler);
 #endif // Safety
-			if (!is_stack_based<base_t>::value) {
+			if constexpr (!is_stack_based<base_t>::value) {
 				lua_pop(lua_state(), 1);
 			}
 		}
@@ -175,7 +175,7 @@ namespace sol {
 		static basic_thread create(lua_State* L) {
 			lua_newthread(L);
 			basic_thread result(L);
-			if (!is_stack_based<base_t>::value) {
+			if constexpr (!is_stack_based<base_t>::value) {
 				lua_pop(L, 1);
 			}
 			return result;

@@ -47,8 +47,10 @@ namespace sol { namespace stack {
 	struct probe_field_getter<std::pair<A, B>, P, b, raw, C> {
 		template <typename Keys>
 		probe get(lua_State* L, Keys&& keys, int tableindex = -2) {
-			if (!b && !maybe_indexable(L, tableindex)) {
-				return probe(false, 0);
+			if constexpr (!b) {
+				if (!maybe_indexable(L, tableindex)) {
+					return probe(false, 0);
+				}
 			}
 			get_field<b, raw>(L, std::get<0>(keys), tableindex);
 			if (!maybe_indexable(L)) {
@@ -82,11 +84,8 @@ namespace sol { namespace stack {
 				if (!maybe_indexable(L, tableindex)) {
 					return probe(false, 0);
 				}
-				return apply(std::index_sequence_for<Args...>(), 1, L, std::forward<Keys>(keys), tableindex);
 			}
-			else {
-				return apply(std::index_sequence_for<Args...>(), 1, L, std::forward<Keys>(keys), tableindex);
-			}
+			return apply(std::index_sequence_for<Args...>(), 1, L, std::forward<Keys>(keys), tableindex);
 		}
 	};
 }} // namespace sol::stack

@@ -118,7 +118,7 @@ namespace sol {
 		}
 	};
 
-	const type_panic_t type_panic = {};
+	constexpr type_panic_t type_panic = {};
 
 	struct constructor_handler {
 		int operator()(lua_State* L, int index, type expected, type actual, string_view message) const noexcept(false) {
@@ -147,7 +147,7 @@ namespace sol {
 				aux_message += detail::demangle<R>();
 				aux_message += "(";
 				int marker = 0;
-				(void)detail::swallow { int(), (detail::accumulate_and_mark(detail::demangle<Args>(), aux_message, marker), int())... };
+				(..., detail::accumulate_and_mark(detail::demangle<Args>(), aux_message, marker));
 				aux_message += ")')";
 				push_type_panic_string(L, index, expected, actual, message, aux_message);
 			}

@@ -91,7 +91,7 @@ namespace sol {
 		          meta::neg<std::is_same<lua_nil_t, meta::unqualified_t<T>>>, is_lua_reference<meta::unqualified_t<T>>> = meta::enabler>
 		basic_environment(T&& r) noexcept : base_t(detail::no_safety, std::forward<T>(r)) {
 #if SOL_IS_ON(SOL_SAFE_REFERENCES)
-			if (!is_environment<meta::unqualified_t<T>>::value) {
+			if constexpr (!is_environment<meta::unqualified_t<T>>::value) {
 				auto pp = stack::push_pop(*this);
 				constructor_handler handler {};
 				stack::check<basic_environment>(lua_state(), -1, handler);
@@ -104,7 +104,7 @@ namespace sol {
 		template <typename T, meta::enable<is_lua_reference<meta::unqualified_t<T>>> = meta::enabler>
 		basic_environment(lua_State* L, T&& r) noexcept : base_t(detail::no_safety, L, std::forward<T>(r)) {
 #if SOL_IS_ON(SOL_SAFE_REFERENCES)
-			if (!is_environment<meta::unqualified_t<T>>::value) {
+			if constexpr (!is_environment<meta::unqualified_t<T>>::value) {
 				auto pp = stack::push_pop(*this);
 				constructor_handler handler {};
 				stack::check<basic_environment>(lua_state(), -1, handler);

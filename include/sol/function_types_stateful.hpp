@@ -40,7 +40,7 @@ namespace sol { namespace function_detail {
 
 		static int call(lua_State* L, functor_function& self) noexcept(noexcept(call_detail::call_wrapped<void, true, false>(L, self.invocation))) {
 			int nr = call_detail::call_wrapped<void, true, false>(L, self.invocation);
-			if (is_yielding) {
+			if constexpr (is_yielding) {
 				return lua_yield(L, nr);
 			}
 			else {
@@ -81,7 +81,7 @@ namespace sol { namespace function_detail {
 #endif
 		{
 			int nr = call_detail::call_wrapped<T, true, false, -1>(L, self.invocation, detail::unwrap(detail::deref(self.member)));
-			if (is_yielding) {
+			if constexpr (is_yielding) {
 				return lua_yield(L, nr);
 			}
 			else {
@@ -136,7 +136,7 @@ namespace sol { namespace function_detail {
 					break;
 				}
 			}
-			if (is_yielding) {
+			if constexpr (is_yielding) {
 				return lua_yield(L, nr);
 			}
 			else {

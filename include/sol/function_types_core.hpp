@@ -34,7 +34,7 @@ namespace sol { namespace function_detail {
 	int call(lua_State* L) {
 		Fx& fx = stack::get<user<Fx>>(L, upvalue_index(start));
 		int nr = fx(L);
-		if (is_yielding) {
+		if constexpr (is_yielding) {
 			return lua_yield(L, nr);
 		}
 		else {

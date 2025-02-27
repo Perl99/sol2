@@ -43,7 +43,7 @@ namespace sol {
 		inline void handle_protected_exception(
 		     lua_State* L_, optional<const std::exception&> maybe_ex, const char* error, detail::protected_handler<ShouldPush_, Handler_>& handler_) {
 			handler_.stack_index = 0;
-			if (ShouldPush_) {
+			if constexpr (ShouldPush_) {
 				handler_.target.push(L_);
 				detail::call_exception_handler(L_, maybe_ex, error);
 				lua_call(L_, 1, 1);
@@ -76,7 +76,7 @@ namespace sol {
 		          meta::neg<std::is_same<lua_nil_t, meta::unqualified_t<T>>>, is_lua_reference<meta::unqualified_t<T>>> = meta::enabler>
 		basic_protected_function(T&& r) noexcept : base_t(std::forward<T>(r)), m_error_handler(get_default_handler(r.lua_state())) {
 #if SOL_IS_ON(SOL_SAFE_REFERENCES)
-			if (!is_function<meta::unqualified_t<T>>::value) {
+			if constexpr (!is_function<meta::unqualified_t<T>>::value) {
 				auto pp = stack::push_pop(*this);
 				constructor_handler handler {};
 				stack::check<basic_protected_function>(lua_state(), -1, handler);

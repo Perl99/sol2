@@ -29,7 +29,7 @@
 namespace sol {
 	namespace detail {
 		struct unchecked_t { };
-		const unchecked_t unchecked = unchecked_t {};
+		constexpr inline unchecked_t unchecked = unchecked_t {};
 	} // namespace detail
 
 	namespace meta {
@@ -135,7 +135,7 @@ namespace sol {
 		using identity_t = typename identity<T>::type;
 
 		template <typename T>
-		using is_builtin_type = std::integral_constant<bool, std::is_arithmetic<T>::value || std::is_pointer<T>::value || std::is_array<T>::value>;
+		using is_builtin_type = std::integral_constant<bool, std::is_arithmetic_v<T> || std::is_pointer_v<T> || std::is_array_v<T>>;
 
 		namespace meta_detail {
 			template <typename T, typename = void>

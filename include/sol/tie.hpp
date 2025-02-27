@@ -53,21 +53,21 @@ namespace sol {
 		void set(std::true_type, T&& target) {
 			typedef tie_size<meta::unqualified_t<T>> value_size;
 			typedef tie_size<std::tuple<Tn...>> tie_size;
-			typedef meta::conditional_t<(value_size::value < tie_size::value), value_size, tie_size> indices_size;
-			typedef std::make_index_sequence<indices_size::value> indices;
+			constexpr std::size_t ind_size = std::min(value_size::value, tie_size::value);
+			typedef std::make_index_sequence<ind_size> indices;
 			set_extra(detail::is_speshul<meta::unqualified_t<T>>(), indices(), std::forward<T>(target));
 		}
 
 		template <std::size_t... I, typename T>
 		void set_extra(std::true_type, std::index_sequence<I...>, T&& target) {
 			using std::get;
-			(void)detail::swallow { 0, (get<I>(static_cast<base_t&>(*this)) = get<I>(types<Tn...>(), target), 0)..., 0 };
+			(..., (get<I>(static_cast<base_t&>(*this)) = get<I>(types<Tn...>(), target)));
 		}
 
 		template <std::size_t... I, typename T>
 		void set_extra(std::false_type, std::index_sequence<I...>, T&& target) {
 			using std::get;
-			(void)detail::swallow { 0, (get<I>(static_cast<base_t&>(*this)) = get<I>(target), 0)..., 0 };
+			(..., (get<I>(static_cast<base_t&>(*this)) = get<I>(target)));
 		}
 
 	public:

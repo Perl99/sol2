@@ -85,7 +85,7 @@ namespace sol { namespace u_detail {
 
 		template <bool is_index = true, bool is_variable = false>
 		static inline int call_with_(lua_State* L_, void* target) {
-			constexpr int boost = !detail::is_non_factory_constructor<F>::value && std::is_same<K, call_construction>::value ? 1 : 0;
+			constexpr int boost = !detail::is_non_factory_constructor<F>::value && std::is_same_v<K, call_construction> ? 1 : 0;
 			auto& f = *static_cast<F*>(target);
 			return call_detail::call_wrapped<T, is_index, is_variable, boost>(L_, f);
 		}
@@ -125,7 +125,7 @@ namespace sol { namespace u_detail {
 				}
 			}
 			else {
-				constexpr int boost = !detail::is_non_factory_constructor<F>::value && std::is_same<K, call_construction>::value ? 1 : 0;
+				constexpr int boost = !detail::is_non_factory_constructor<F>::value && std::is_same_v<K, call_construction> ? 1 : 0;
 				auto& f = *static_cast<F*>(target);
 				return call_detail::call_wrapped<T, is_index, is_variable, boost>(L_, f);
 			}
@@ -383,7 +383,7 @@ namespace sol { namespace u_detail {
 				"a bug report.");
 			static_assert(!meta::any_same<T, Bases...>::value, "base classes cannot list the original class as part of the bases");
 			if constexpr (sizeof...(Bases) > 0) {
-				(void)detail::swallow { 0, ((weak_derive<Bases>::value = true), 0)... };
+				(..., (weak_derive<Bases>::value = true));
 
 				void* derived_this = static_cast<void*>(static_cast<usertype_storage<T>*>(this));
 
@@ -527,7 +527,7 @@ namespace sol { namespace u_detail {
 			int base_result;
 			(void)keep_going;
 			(void)base_result;
-			(void)detail::swallow { 1, (base_walk_index<is_new_index, Bases>(L, self, keep_going, base_result), 1)... };
+			(..., (base_walk_index<is_new_index, Bases>(L, self, keep_going, base_result)));
 			if constexpr (sizeof...(Bases) > 0) {
 				if (!keep_going) {
 					return base_result;
@@ -1071,7 +1071,7 @@ namespace sol { namespace u_detail {
 			case submetatable_type::named:
 				break;
 			case submetatable_type::unique:
-				if constexpr (std::is_destructible_v<T>) {
+				if constexpr (std::is_destructible_v<T> && has_flag(enrollment_flags, automagic_flags::destructor)) {
 					stack::set_field<false, true>(L_, meta_function::garbage_collect, &detail::unique_destroy<T>, t.stack_index());
 				}
 				else {
@@ -1081,7 +1081,7 @@ namespace sol { namespace u_detail {
 			case submetatable_type::value:
 			case submetatable_type::const_value:
 			default:
-				if constexpr (std::is_destructible_v<T>) {
+				if constexpr (std::is_destructible_v<T> && has_flag(enrollment_flags, automagic_flags::destructor)) {
 					stack::set_field<false, true>(L_, meta_function::garbage_collect, detail::make_destructor<T>(), t.stack_index());
 				}
 				else {

@@ -106,13 +106,13 @@ namespace sol {
 	template <typename... Args>
 	using constructors = constructor_list<Args...>;
 
-	const auto default_constructor = constructors<types<>> {};
+	constexpr auto default_constructor = constructors<types<>> {};
 
 	struct no_construction { };
-	const auto no_constructor = no_construction {};
+	constexpr auto no_constructor = no_construction {};
 
 	struct call_construction { };
-	const auto call_constructor = call_construction {};
+	constexpr auto call_constructor = call_construction {};
 
 	template <typename... Functions>
 	struct constructor_wrapper {
@@ -150,7 +150,7 @@ namespace sol {
 	template <>
 	struct destructor_wrapper<void> { };
 
-	const destructor_wrapper<void> default_destructor {};
+	constexpr destructor_wrapper<void> default_destructor {};
 
 	template <typename Fx>
 	inline auto destructor(Fx&& fx) {

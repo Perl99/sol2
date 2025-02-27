@@ -137,9 +137,9 @@ namespace sol {
 			lua_State* L = base_t::lua_state();
 			(void)table_index;
 			(void)L;
-			void(detail::swallow { (stack::set_field<(top_level), raw>(
-			                             L, std::get<I * 2>(std::forward<Pairs>(pairs)), std::get<I * 2 + 1>(std::forward<Pairs>(pairs)), table_index),
-			     0)... });
+			(..., (stack::set_field<top_level, raw>(
+			                             L, std::get<I * 2>(std::forward<Pairs>(pairs)), std::get<I * 2 + 1>(std::forward<Pairs>(pairs)), table_index)
+			                             ));
 		}
 
 		template <bool global, bool raw, detail::insert_mode mode, typename T, typename Key, typename... Keys>
@@ -339,7 +339,7 @@ namespace sol {
 		}
 
 		basic_table_core(lua_State* L, const new_table& nt) : base_t(L, -stack::push(L, nt)) {
-			if (!is_stack_based<meta::unqualified_t<ref_t>>::value) {
+			if constexpr (!is_stack_based<meta::unqualified_t<ref_t>>::value) {
 				lua_pop(L, 1);
 			}
 		}
@@ -365,7 +365,7 @@ namespace sol {
 		          meta::neg<std::is_same<lua_nil_t, meta::unqualified_t<T>>>, is_lua_reference<meta::unqualified_t<T>>> = meta::enabler>
 		basic_table_core(T&& r) noexcept : basic_table_core(detail::no_safety, std::forward<T>(r)) {
 #if SOL_IS_ON(SOL_SAFE_REFERENCES)
-			if (!is_table<meta::unqualified_t<T>>::value) {
+			if constexpr (!is_table<meta::unqualified_t<T>>::value) {
 				auto pp = stack::push_pop(*this);
 				int table_index = pp.index_of(*this);
 				constructor_handler handler {};
@@ -644,7 +644,7 @@ namespace sol {
 			auto pp = stack::push_pop(*this);
 			int table_index = pp.index_of(*this);
 			lua_State* L = base_t::lua_state();
-			(void)detail::swallow { 0, (stack::stack_detail::raw_table_set(L, std::forward<Args>(args), table_index), 0)... };
+			(..., (stack::stack_detail::raw_table_set(L, std::forward<Args>(args), table_index)));
 			return *this;
 		}
 

@@ -130,14 +130,15 @@ namespace sol {
 #if SOL_IS_OFF(SOL_ALIGN_MEMORY)
 			     false
 #else
-			     (std::alignment_of<void*>::value > 1)
+			     (std::alignment_of_v<void*> > 1)
 #endif
 			     >;
-			if (!use_align::value) {
+			if constexpr (!use_align::value) {
 				return ptr;
+			} else {
+				std::size_t space = (std::numeric_limits<std::size_t>::max)();
+				return align(std::alignment_of_v<void*>, ptr, space);
 			}
-			std::size_t space = (std::numeric_limits<std::size_t>::max)();
-			return align(std::alignment_of<void*>::value, ptr, space);
 		}
 
 		template <bool pre_aligned = false, bool pre_shifted = false>
@@ -146,20 +147,21 @@ namespace sol {
 #if SOL_IS_OFF(SOL_ALIGN_MEMORY)
 			     false
 #else
-			     (std::alignment_of<unique_destructor>::value > 1)
+			     (std::alignment_of_v<unique_destructor> > 1)
 #endif
 			     >;
-			if (!pre_aligned) {
+			if constexpr (!pre_aligned) {
 				ptr = align_usertype_pointer(ptr);
 			}
-			if (!pre_shifted) {
+			if constexpr (!pre_shifted) {
 				ptr = static_cast<void*>(static_cast<char*>(ptr) + sizeof(void*));
 			}
-			if (!use_align::value) {
+			if constexpr (!use_align::value) {
 				return static_cast<void*>(static_cast<void**>(ptr) + 1);
+			} else {
+				std::size_t space = (std::numeric_limits<std::size_t>::max)();
+				return align(std::alignment_of<unique_destructor>::value, ptr, space);
 			}
-			std::size_t space = (std::numeric_limits<std::size_t>::max)();
-			return align(std::alignment_of<unique_destructor>::value, ptr, space);
 		}
 
 		template <bool pre_aligned = false, bool pre_shifted = false>
@@ -168,20 +170,21 @@ namespace sol {
 #if SOL_IS_OFF(SOL_ALIGN_MEMORY)
 			     false
 #else
-			     (std::alignment_of<unique_tag>::value > 1)
+			     (std::alignment_of_v<unique_tag> > 1)
 #endif
 			     >;
-			if (!pre_aligned) {
+			if constexpr (!pre_aligned) {
 				ptr = align_usertype_unique_destructor(ptr);
 			}
-			if (!pre_shifted) {
+			if constexpr (!pre_shifted) {
 				ptr = static_cast<void*>(static_cast<char*>(ptr) + sizeof(unique_destructor));
 			}
-			if (!use_align::value) {
+			if constexpr (!use_align::value) {
 				return ptr;
+			} else {
+				std::size_t space = (std::numeric_limits<std::size_t>::max)();
+				return align(std::alignment_of<unique_tag>::value, ptr, space);
 			}
-			std::size_t space = (std::numeric_limits<std::size_t>::max)();
-			return align(std::alignment_of<unique_tag>::value, ptr, space);
 		}
 
 		template <typename T, bool pre_aligned = false, bool pre_shifted = false>
@@ -194,17 +197,18 @@ namespace sol {
 #endif
 			     >
 			     use_align;
-			if (!pre_aligned) {
+			if constexpr (!pre_aligned) {
 				ptr = align_usertype_unique_tag(ptr);
 			}
-			if (!pre_shifted) {
+			if constexpr (!pre_shifted) {
 				ptr = static_cast<void*>(static_cast<char*>(ptr) + sizeof(unique_tag));
 			}
-			if (!use_align::value) {
+			if constexpr (!use_align::value) {
 				return ptr;
+			} else {
+				std::size_t space = (std::numeric_limits<std::size_t>::max)();
+				return align(std::alignment_of_v<T>, ptr, space);
 			}
-			std::size_t space = (std::numeric_limits<std::size_t>::max)();
-			return align(std::alignment_of_v<T>, ptr, space);
 		}
 
 		template <typename T>
@@ -217,11 +221,12 @@ namespace sol {
 #endif
 			     >
 			     use_align;
-			if (!use_align::value) {
+			if constexpr (!use_align::value) {
 				return ptr;
+			} else {
+				std::size_t space = (std::numeric_limits<std::size_t>::max)();
+				return align(std::alignment_of_v<T>, ptr, space);
 			}
-			std::size_t space = (std::numeric_limits<std::size_t>::max)();
-			return align(std::alignment_of_v<T>, ptr, space);
 		}
 
 		template <typename T>
@@ -230,27 +235,28 @@ namespace sol {
 #if SOL_IS_OFF(SOL_ALIGN_MEMORY)
 			     false
 #else
-			     (std::alignment_of<T*>::value > 1)
+			     (std::alignment_of_v<T*> > 1)
 #endif
 			     >
 			     use_align;
-			if (!use_align::value) {
+			if constexpr (!use_align::value) {
 				T** pointerpointer = static_cast<T**>(alloc_newuserdata(L, sizeof(T*)));
 				return pointerpointer;
-			}
-			constexpr std::size_t initial_size = aligned_space_for<T*>();
+			} else {
+				constexpr std::size_t initial_size = aligned_space_for<T*>();
 
-			std::size_t allocated_size = initial_size;
-			void* unadjusted = alloc_newuserdata(L, initial_size);
-			void* adjusted = align(std::alignment_of<T*>::value, unadjusted, allocated_size);
-			if (adjusted == nullptr) {
-				// trash allocator can burn in hell
-				lua_pop(L, 1);
-				// luaL_error(L, "if you are the one that wrote this allocator you should feel bad for doing a
-				// worse job than malloc/realloc and should go read some books, yeah?");
-				luaL_error(L, "cannot properly align memory for '%s'", detail::demangle<T*>().data());
+				std::size_t allocated_size = initial_size;
+				void* unadjusted = alloc_newuserdata(L, initial_size);
+				void* adjusted = align(std::alignment_of_v<T*>, unadjusted, allocated_size);
+				if (adjusted == nullptr) {
+					// trash allocator can burn in hell
+					lua_pop(L, 1);
+					// luaL_error(L, "if you are the one that wrote this allocator you should feel bad for doing a
+					// worse job than malloc/realloc and should go read some books, yeah?");
+					luaL_error(L, "cannot properly align memory for '%s'", detail::demangle<T*>().data());
+				}
+				return static_cast<T**>(adjusted);
 			}
-			return static_cast<T**>(adjusted);
 		}
 
 		inline bool attempt_alloc(lua_State* L, std::size_t ptr_align, std::size_t ptr_size, std::size_t value_align,
@@ -314,39 +320,39 @@ namespace sol {
 #if SOL_IS_OFF(SOL_ALIGN_MEMORY)
 			     false
 #else
-			     (std::alignment_of<T*>::value > 1 || std::alignment_of_v<T> > 1)
+			     (std::alignment_of_v<T*> > 1 || std::alignment_of_v<T> > 1)
 #endif
 			     >
 			     use_align;
-			if (!use_align::value) {
+			if constexpr (!use_align::value) {
 				T** pointerpointer = static_cast<T**>(alloc_newuserdata(L, sizeof(T*) + sizeof(T)));
 				T*& pointerreference = *pointerpointer;
 				T* allocationtarget = reinterpret_cast<T*>(pointerpointer + 1);
 				pointerreference = allocationtarget;
 				return allocationtarget;
-			}
+			} else {
+				constexpr std::size_t initial_size = aligned_space_for<T*, T>();
 
-			constexpr std::size_t initial_size = aligned_space_for<T*, T>();
-
-			void* pointer_adjusted;
-			void* data_adjusted;
-			bool result
-			     = attempt_alloc(L, std::alignment_of_v<T*>, sizeof(T*), std::alignment_of_v<T>, initial_size, pointer_adjusted, data_adjusted);
-			if (!result) {
-				if (pointer_adjusted == nullptr) {
-					luaL_error(L, "aligned allocation of userdata block (pointer section) for '%s' failed", detail::demangle<T>().c_str());
+				void* pointer_adjusted;
+				void* data_adjusted;
+				bool result
+				     = attempt_alloc(L, std::alignment_of_v<T*>, sizeof(T*), std::alignment_of_v<T>, initial_size, pointer_adjusted, data_adjusted);
+				if (!result) {
+					if (pointer_adjusted == nullptr) {
+						luaL_error(L, "aligned allocation of userdata block (pointer section) for '%s' failed", detail::demangle<T>().c_str());
+					}
+					else {
+						luaL_error(L, "aligned allocation of userdata block (data section) for '%s' failed", detail::demangle<T>().c_str());
+					}
+					return nullptr;
 				}
-				else {
-					luaL_error(L, "aligned allocation of userdata block (data section) for '%s' failed", detail::demangle<T>().c_str());
-				}
-				return nullptr;
-			}
 
-			T** pointerpointer = reinterpret_cast<T**>(pointer_adjusted);
-			T*& pointerreference = *pointerpointer;
-			T* allocationtarget = reinterpret_cast<T*>(data_adjusted);
-			pointerreference = allocationtarget;
-			return allocationtarget;
+				T** pointerpointer = static_cast<T**>(pointer_adjusted);
+				T*& pointerreference = *pointerpointer;
+				T* allocationtarget = static_cast<T*>(data_adjusted);
+				pointerreference = allocationtarget;
+				return allocationtarget;
+			}
 		}
 
 		template <typename T, typename Real>
@@ -355,52 +361,52 @@ namespace sol {
 #if SOL_IS_OFF(SOL_ALIGN_MEMORY)
 			     false
 #else
-			     (std::alignment_of<T*>::value > 1 || std::alignment_of<unique_tag>::value > 1 || std::alignment_of<unique_destructor>::value > 1
-			          || std::alignment_of<Real>::value > 1)
+			     (std::alignment_of_v<T*> > 1 || std::alignment_of_v<unique_tag> > 1 || std::alignment_of_v<unique_destructor> > 1
+			          || std::alignment_of_v<Real> > 1)
 #endif
 			     >
 			     use_align;
-			if (!use_align::value) {
+			if constexpr (!use_align::value) {
 				pref = static_cast<T**>(alloc_newuserdata(L, sizeof(T*) + sizeof(detail::unique_destructor) + sizeof(unique_tag) + sizeof(Real)));
 				dx = static_cast<detail::unique_destructor*>(static_cast<void*>(pref + 1));
 				id = static_cast<unique_tag*>(static_cast<void*>(dx + 1));
 				Real* mem = static_cast<Real*>(static_cast<void*>(id + 1));
 				return mem;
+			} else {
+				constexpr std::size_t initial_size = aligned_space_for<T*, unique_destructor, unique_tag, Real>();
+
+				void* pointer_adjusted = nullptr;
+				void* dx_adjusted = nullptr;
+				void* id_adjusted = nullptr;
+				void* data_adjusted = nullptr;
+				bool result = attempt_alloc_unique(L,
+				     std::alignment_of_v<T*>,
+				     sizeof(T*),
+				     std::alignment_of_v<Real>,
+				     initial_size,
+				     pointer_adjusted,
+				     dx_adjusted,
+				     id_adjusted,
+				     data_adjusted);
+				if (!result) {
+					if (pointer_adjusted == nullptr) {
+						luaL_error(L, "aligned allocation of userdata block (pointer section) for '%s' failed", detail::demangle<T>().c_str());
+					}
+					else if (dx_adjusted == nullptr) {
+						luaL_error(L, "aligned allocation of userdata block (deleter section) for '%s' failed", detail::demangle<T>().c_str());
+					}
+					else {
+						luaL_error(L, "aligned allocation of userdata block (data section) for '%s' failed", detail::demangle<T>().c_str());
+					}
+					return nullptr;
+				}
+
+				pref = static_cast<T**>(pointer_adjusted);
+				dx = static_cast<detail::unique_destructor*>(dx_adjusted);
+				id = static_cast<unique_tag*>(id_adjusted);
+				Real* mem = static_cast<Real*>(data_adjusted);
+				return mem;
 			}
-
-			constexpr std::size_t initial_size = aligned_space_for<T*, unique_destructor, unique_tag, Real>();
-
-			void* pointer_adjusted = nullptr;
-			void* dx_adjusted = nullptr;
-			void* id_adjusted = nullptr;
-			void* data_adjusted = nullptr;
-			bool result = attempt_alloc_unique(L,
-			     std::alignment_of_v<T*>,
-			     sizeof(T*),
-			     std::alignment_of_v<Real>,
-			     initial_size,
-			     pointer_adjusted,
-			     dx_adjusted,
-			     id_adjusted,
-			     data_adjusted);
-			if (!result) {
-				if (pointer_adjusted == nullptr) {
-					luaL_error(L, "aligned allocation of userdata block (pointer section) for '%s' failed", detail::demangle<T>().c_str());
-				}
-				else if (dx_adjusted == nullptr) {
-					luaL_error(L, "aligned allocation of userdata block (deleter section) for '%s' failed", detail::demangle<T>().c_str());
-				}
-				else {
-					luaL_error(L, "aligned allocation of userdata block (data section) for '%s' failed", detail::demangle<T>().c_str());
-				}
-				return nullptr;
-			}
-
-			pref = static_cast<T**>(pointer_adjusted);
-			dx = static_cast<detail::unique_destructor*>(dx_adjusted);
-			id = static_cast<unique_tag*>(id_adjusted);
-			Real* mem = static_cast<Real*>(data_adjusted);
-			return mem;
 		}
 
 		template <typename T>
@@ -413,21 +419,21 @@ namespace sol {
 #endif
 			     >
 			     use_align;
-			if (!use_align::value) {
+			if constexpr (!use_align::value) {
 				T* pointer = static_cast<T*>(alloc_newuserdata(L, sizeof(T)));
 				return pointer;
-			}
+			} else {
+				constexpr std::size_t initial_size = aligned_space_for<T>();
 
-			constexpr std::size_t initial_size = aligned_space_for<T>();
-
-			std::size_t allocated_size = initial_size;
-			void* unadjusted = alloc_newuserdata(L, allocated_size);
-			void* adjusted = align(std::alignment_of_v<T>, unadjusted, allocated_size);
-			if (adjusted == nullptr) {
-				lua_pop(L, 1);
-				luaL_error(L, "cannot properly align memory for '%s'", detail::demangle<T>().data());
+				std::size_t allocated_size = initial_size;
+				void* unadjusted = alloc_newuserdata(L, allocated_size);
+				void* adjusted = align(std::alignment_of_v<T>, unadjusted, allocated_size);
+				if (adjusted == nullptr) {
+					lua_pop(L, 1);
+					luaL_error(L, "cannot properly align memory for '%s'", detail::demangle<T>().data());
+				}
+				return static_cast<T*>(adjusted);
 			}
-			return static_cast<T*>(adjusted);
 		}
 
 		template <typename T>
@@ -880,7 +886,7 @@ namespace sol {
 		}
 
 		// overload allows to use a pusher of a specific type, but pass in any kind of args
-		template <typename T, typename Arg, typename... Args, typename = std::enable_if_t<!std::is_same<T, Arg>::value>>
+		template <typename T, typename Arg, typename... Args, typename = std::enable_if_t<!std::is_same_v<T, Arg>>>
 		int push(lua_State* L, Arg&& arg, Args&&... args) {
 			using Tu = meta::unqualified_t<T>;
 			if constexpr (meta::meta_detail::is_adl_sol_lua_push_exact_v<T, Arg, Args...>) {
@@ -956,7 +962,7 @@ namespace sol {
 		template <typename T, typename... Args>
 		int multi_push(lua_State* L, T&& t, Args&&... args) {
 			int pushcount = push(L, std::forward<T>(t));
-			void(detail::swallow { (pushcount += stack::push(L, std::forward<Args>(args)), 0)... });
+			(..., (pushcount += stack::push(L, std::forward<Args>(args))));
 			return pushcount;
 		}
 
@@ -968,7 +974,7 @@ namespace sol {
 		template <typename T, typename... Args>
 		int multi_push_reference(lua_State* L, T&& t, Args&&... args) {
 			int pushcount = stack::push_reference(L, std::forward<T>(t));
-			void(detail::swallow { (pushcount += stack::push_reference(L, std::forward<Args>(args)), 0)... });
+			(..., (pushcount += stack::push_reference(L, std::forward<Args>(args))));
 			return pushcount;
 		}
 
@@ -1128,24 +1134,19 @@ namespace sol {
 			return multi_check<Args...>(L, index, std::forward<Handler>(handler), tracking);
 		}
 
-		template <typename... Args>
-		bool multi_check(lua_State* L, int index) {
-			return multi_check<Args...>(L, index);
-		}
-
 		template <typename T>
 		auto unqualified_get(lua_State* L, int index, record& tracking) -> decltype(stack_detail::unchecked_unqualified_get<T>(L, index, tracking)) {
 #if SOL_IS_ON(SOL_SAFE_GETTER)
-			static constexpr bool is_op = meta::is_optional_v<T>;
-			if constexpr (is_op) {
+			if constexpr (meta::is_optional_v<T>) {
 				return stack_detail::unchecked_unqualified_get<T>(L, index, tracking);
 			}
 			else {
-				if (is_lua_reference<T>::value) {
+				if constexpr (is_lua_reference<T>::value) {
 					return stack_detail::unchecked_unqualified_get<T>(L, index, tracking);
+				} else {
+					auto op = unqualified_check_get<T>(L, index, type_panic_c_str, tracking);
+					return *std::move(op);
 				}
-				auto op = unqualified_check_get<T>(L, index, type_panic_c_str, tracking);
-				return *std::move(op);
 			}
 #else
 			return stack_detail::unchecked_unqualified_get<T>(L, index, tracking);
@@ -1161,16 +1162,16 @@ namespace sol {
 		template <typename T>
 		auto get(lua_State* L, int index, record& tracking) -> decltype(stack_detail::unchecked_get<T>(L, index, tracking)) {
 #if SOL_IS_ON(SOL_SAFE_GETTER)
-			static constexpr bool is_op = meta::is_optional_v<T>;
-			if constexpr (is_op) {
+			if constexpr (meta::is_optional_v<T>) {
 				return stack_detail::unchecked_get<T>(L, index, tracking);
 			}
 			else {
-				if (is_lua_reference<T>::value) {
+				if constexpr (is_lua_reference<T>::value) {
 					return stack_detail::unchecked_get<T>(L, index, tracking);
+				} else {
+					auto op = check_get<T>(L, index, type_panic_c_str, tracking);
+					return *std::move(op);
 				}
-				auto op = check_get<T>(L, index, type_panic_c_str, tracking);
-				return *std::move(op);
 			}
 #else
 			return stack_detail::unchecked_get<T>(L, index, tracking);
@@ -1185,7 +1186,7 @@ namespace sol {
 
 		template <typename T>
 		decltype(auto) get_usertype(lua_State* L, int index, record& tracking) {
-			using UT = meta::conditional_t<std::is_pointer<T>::value, detail::as_pointer_tag<std::remove_pointer_t<T>>, detail::as_value_tag<T>>;
+			using UT = meta::conditional_t<std::is_pointer_v<T>, detail::as_pointer_tag<std::remove_pointer_t<T>>, detail::as_value_tag<T>>;
 			return get<UT>(L, index, tracking);
 		}
 

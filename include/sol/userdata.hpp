@@ -42,7 +42,7 @@ namespace sol {
 		          is_lua_reference<meta::unqualified_t<T>>> = meta::enabler>
 		basic_userdata(T&& r) noexcept : base_t(std::forward<T>(r)) {
 #if SOL_IS_ON(SOL_SAFE_REFERENCES)
-			if (!is_userdata<meta::unqualified_t<T>>::value) {
+			if constexpr (!is_userdata<meta::unqualified_t<T>>::value) {
 				auto pp = stack::push_pop(*this);
 				type_assert(lua_state(), -1, type::userdata);
 			}
@@ -92,7 +92,7 @@ namespace sol {
 		          is_lua_reference<meta::unqualified_t<T>>> = meta::enabler>
 		basic_lightuserdata(T&& r) noexcept : base_t(std::forward<T>(r)) {
 #if SOL_IS_ON(SOL_SAFE_REFERENCES)
-			if (!is_lightuserdata<meta::unqualified_t<T>>::value) {
+			if constexpr (!is_lightuserdata<meta::unqualified_t<T>>::value) {
 				auto pp = stack::push_pop(*this);
 				type_assert(lua_state(), -1, type::lightuserdata);
 			}

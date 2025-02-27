@@ -31,10 +31,6 @@
 #include <cstddef>
 
 namespace sol {
-	namespace detail {
-		using swallow = std::initializer_list<int>;
-	} // namespace detail
-
 	namespace meta {
 		template <typename T>
 		using is_tuple = is_specialization_of<T, std::tuple>;

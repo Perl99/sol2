@@ -33,7 +33,7 @@
 namespace sol {
 	namespace detail {
 		struct direct_error_tag { };
-		const auto direct_error = direct_error_tag {};
+		constexpr auto direct_error = direct_error_tag {};
 
 		struct error_result {
 			int results;

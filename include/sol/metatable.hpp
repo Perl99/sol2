@@ -110,7 +110,7 @@ namespace sol {
 		          meta::neg<std::is_same<lua_nil_t, meta::unqualified_t<T>>>, is_lua_reference<meta::unqualified_t<T>>> = meta::enabler>
 		basic_metatable(T&& r) noexcept : basic_metatable(detail::no_safety, std::forward<T>(r)) {
 #if SOL_IS_ON(SOL_SAFE_REFERENCES)
-			if (!is_table<meta::unqualified_t<T>>::value) {
+			if constexpr (!is_table<meta::unqualified_t<T>>::value) {
 				auto pp = stack::push_pop(*this);
 				constructor_handler handler {};
 				stack::check<basic_metatable>(base_t::lua_state(), -1, handler);
