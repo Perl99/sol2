@@ -1136,8 +1136,7 @@ namespace sol {
 		template <typename T>
 		auto unqualified_get(lua_State* L, int index, record& tracking) -> decltype(stack_detail::unchecked_unqualified_get<T>(L, index, tracking)) {
 #if SOL_IS_ON(SOL_SAFE_GETTER)
-			static constexpr bool is_op = meta::is_optional_v<T>;
-			if constexpr (is_op) {
+			if constexpr (meta::is_optional_v<T>) {
 				return stack_detail::unchecked_unqualified_get<T>(L, index, tracking);
 			}
 			else {
@@ -1161,8 +1160,7 @@ namespace sol {
 		template <typename T>
 		auto get(lua_State* L, int index, record& tracking) -> decltype(stack_detail::unchecked_get<T>(L, index, tracking)) {
 #if SOL_IS_ON(SOL_SAFE_GETTER)
-			static constexpr bool is_op = meta::is_optional_v<T>;
-			if constexpr (is_op) {
+			if constexpr (meta::is_optional_v<T>) {
 				return stack_detail::unchecked_get<T>(L, index, tracking);
 			}
 			else {

@@ -56,7 +56,7 @@ namespace sol {
 				auto it = code.cbegin();
 				auto e = code.cend();
 				std::size_t i = 0;
-				static const std::size_t n = N - 4;
+				const std::size_t n = N - 4;
 				for (i = 0; i < n && it != e; ++i, ++it) {
 					basechunkname[i] = *it;
 				}
@@ -94,10 +94,10 @@ namespace sol {
 			template <typename T>
 			inline int push_as_upvalues(lua_State* L, T& item) {
 				typedef std::decay_t<T> TValue;
-				static const std::size_t itemsize = sizeof(TValue);
-				static const std::size_t voidsize = sizeof(void*);
-				static const std::size_t voidsizem1 = voidsize - 1;
-				static const std::size_t data_t_count = (sizeof(TValue) + voidsizem1) / voidsize;
+				constexpr std::size_t itemsize = sizeof(TValue);
+				constexpr std::size_t voidsize = sizeof(void*);
+				constexpr std::size_t voidsizem1 = voidsize - 1;
+				constexpr std::size_t data_t_count = (sizeof(TValue) + voidsizem1) / voidsize;
 				typedef std::array<void*, data_t_count> data_t;
 
 				data_t data { {} };
@@ -112,7 +112,7 @@ namespace sol {
 
 			template <typename T>
 			inline std::pair<T, int> get_as_upvalues(lua_State* L, int index = 2) {
-				static const std::size_t data_t_count = (sizeof(T) + (sizeof(void*) - 1)) / sizeof(void*);
+				constexpr std::size_t data_t_count = (sizeof(T) + (sizeof(void*) - 1)) / sizeof(void*);
 				typedef std::array<void*, data_t_count> data_t;
 				data_t voiddata { {} };
 				for (std::size_t i = 0, d = 0; d < sizeof(T); ++i, d += sizeof(void*)) {
@@ -123,7 +123,7 @@ namespace sol {
 
 			template <typename T>
 			inline std::pair<T, int> get_as_upvalues_using_function(lua_State* L, int function_index = -1) {
-				static const std::size_t data_t_count = (sizeof(T) + (sizeof(void*) - 1)) / sizeof(void*);
+				constexpr std::size_t data_t_count = (sizeof(T) + (sizeof(void*) - 1)) / sizeof(void*);
 				typedef std::array<void*, data_t_count> data_t;
 				function_index = lua_absindex(L, function_index);
 				int index = 0;

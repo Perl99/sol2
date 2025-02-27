@@ -187,7 +187,7 @@ namespace sol { namespace stack {
 	struct qualified_getter {
 		static decltype(auto) get(lua_State* L, int index, record& tracking) {
 			using Tu = meta::unqualified_t<X>;
-			static constexpr bool is_maybe_userdata_of_some_kind
+			constexpr bool is_maybe_userdata_of_some_kind
 				= !std::is_reference_v<
 				       X> && is_container_v<Tu> && std::is_default_constructible_v<Tu> && !is_lua_primitive_v<Tu> && !is_transparent_argument_v<Tu>;
 			if constexpr (is_maybe_userdata_of_some_kind) {

@@ -447,7 +447,7 @@ namespace sol { namespace stack {
 						return false;
 					}
 					// Do advanced check for call-style userdata?
-					static const auto& callkey = to_string(meta_function::call);
+					const auto& callkey = to_string(meta_function::call);
 					if (lua_getmetatable(L_, index) == 0) {
 						// No metatable, no __call key possible
 						handler(L_, index, type::function, t, "value is not a function and does not have overriden metatable");

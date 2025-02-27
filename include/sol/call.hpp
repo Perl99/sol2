@@ -324,7 +324,7 @@ namespace sol {
 
 		template <typename T, bool checked, bool clean_stack, typename... TypeLists>
 		inline int construct_trampolined(lua_State* L) {
-			static const auto& meta = usertype_traits<T>::metatable();
+			const auto& meta = usertype_traits<T>::metatable();
 			int argcount = lua_gettop(L);
 			call_syntax syntax = argcount > 0 ? stack::get_call_syntax(L, usertype_traits<T>::user_metatable(), 1) : call_syntax::dot;
 			argcount -= static_cast<int>(syntax);
@@ -351,8 +351,7 @@ namespace sol {
 			template <typename Fx, typename... Args>
 			static int call(lua_State* L, Fx&& f, Args&&... args) {
 				using uFx = meta::unqualified_t<Fx>;
-				static constexpr bool is_ref = is_lua_reference_v<uFx>;
-				if constexpr (is_ref) {
+				if constexpr (is_lua_reference_v<uFx>) {
 					if constexpr (is_index) {
 						return stack::push(L, std::forward<Fx>(f), std::forward<Args>(args)...);
 					}

@@ -116,7 +116,7 @@ namespace sol {
 
 		template <bool raw, typename Ret, typename... Keys>
 		decltype(auto) traverse_get_single(int table_index, Keys&&... keys) const {
-			constexpr static bool global = (meta::count_for_to_pack_v < 1, is_get_direct_tableless, meta::unqualified_t<Keys>... >> 0);
+			constexpr bool global = (meta::count_for_to_pack_v < 1, is_get_direct_tableless, meta::unqualified_t<Keys>... >> 0);
 			if constexpr (meta::is_optional_v<meta::unqualified_t<Ret>>) {
 				int popcount = 0;
 				detail::ref_clean c(base_t::lua_state(), popcount);
@@ -130,7 +130,7 @@ namespace sol {
 
 		template <bool raw, typename Pairs, std::size_t... I>
 		void tuple_set(std::index_sequence<I...>, Pairs&& pairs) {
-			constexpr static bool global = (meta::count_even_for_pack_v < is_set_direct_tableless,
+			constexpr bool global = (meta::count_even_for_pack_v < is_set_direct_tableless,
 			     meta::unqualified_t<decltype(std::get<I * 2>(std::forward<Pairs>(pairs)))>... >> 0);
 			auto pp = stack::push_pop<global>(*this);
 			int table_index = pp.index_of(*this);
@@ -416,7 +416,7 @@ namespace sol {
 		template <typename... Ret, typename... Keys>
 		decltype(auto) get(Keys&&... keys) const {
 			static_assert(sizeof...(Keys) == sizeof...(Ret), "number of keys and number of return types do not match");
-			constexpr static bool global = meta::all<meta::boolean<top_level>, is_get_direct_tableless<meta::unqualified_t<Keys>>...>::value;
+			constexpr bool global = meta::all<meta::boolean<top_level>, is_get_direct_tableless<meta::unqualified_t<Keys>>...>::value;
 			auto pp = stack::push_pop<global>(*this);
 			int table_index = pp.index_of(*this);
 			return tuple_get<false, Ret...>(table_index, std::forward<Keys>(keys)...);
@@ -444,7 +444,7 @@ namespace sol {
 		template <typename T, typename... Keys>
 		decltype(auto) traverse_get(Keys&&... keys) const {
 			static_assert(sizeof...(Keys) > 0, "must pass at least 1 key to get");
-			constexpr static bool global = (meta::count_for_to_pack_v < 1, is_get_direct_tableless, meta::unqualified_t<Keys>... >> 0);
+			constexpr bool global = (meta::count_for_to_pack_v < 1, is_get_direct_tableless, meta::unqualified_t<Keys>... >> 0);
 			auto pp = stack::push_pop<global>(*this);
 			int table_index = pp.index_of(*this);
 			return traverse_get_single<false, T>(table_index, std::forward<Keys>(keys)...);
@@ -453,7 +453,7 @@ namespace sol {
 		template <typename... Keys>
 		basic_table_core& traverse_set(Keys&&... keys) {
 			static_assert(sizeof...(Keys) > 1, "must pass at least 1 key and 1 value to set");
-			constexpr static bool global
+			constexpr bool global
 			     = (meta::count_when_for_to_pack_v < detail::is_not_insert_mode, 1, is_set_direct_tableless, meta::unqualified_t<Keys>... >> 0);
 			auto pp = stack::push_pop<global>(*this);
 			int table_index = pp.index_of(*this);
@@ -477,7 +477,7 @@ namespace sol {
 		template <typename... Ret, typename... Keys>
 		decltype(auto) raw_get(Keys&&... keys) const {
 			static_assert(sizeof...(Keys) == sizeof...(Ret), "number of keys and number of return types do not match");
-			constexpr static bool global = (meta::count_for_to_pack_v < 1, is_raw_get_direct_tableless, meta::unqualified_t<Keys>... >> 0);
+			constexpr bool global = (meta::count_for_to_pack_v < 1, is_raw_get_direct_tableless, meta::unqualified_t<Keys>... >> 0);
 			auto pp = stack::push_pop<global>(*this);
 			int table_index = pp.index_of(*this);
 			return tuple_get<true, Ret...>(table_index, std::forward<Keys>(keys)...);
@@ -504,7 +504,7 @@ namespace sol {
 
 		template <typename T, typename... Keys>
 		decltype(auto) traverse_raw_get(Keys&&... keys) const {
-			constexpr static bool global = (meta::count_for_to_pack_v < 1, is_raw_get_direct_tableless, meta::unqualified_t<Keys>... >> 0);
+			constexpr bool global = (meta::count_for_to_pack_v < 1, is_raw_get_direct_tableless, meta::unqualified_t<Keys>... >> 0);
 			auto pp = stack::push_pop<global>(*this);
 			int table_index = pp.index_of(*this);
 			return traverse_get_single<true, T>(table_index, std::forward<Keys>(keys)...);
@@ -512,7 +512,7 @@ namespace sol {
 
 		template <typename... Keys>
 		basic_table_core& traverse_raw_set(Keys&&... keys) {
-			constexpr static bool global = (meta::count_for_to_pack_v < 1, is_raw_set_direct_tableless, meta::unqualified_t<Keys>... >> 0);
+			constexpr bool global = (meta::count_for_to_pack_v < 1, is_raw_set_direct_tableless, meta::unqualified_t<Keys>... >> 0);
 			auto pp = stack::push_pop<global>(*this);
 			lua_State* L = base_t::lua_state();
 			auto pn = stack::pop_n(L, static_cast<int>(sizeof...(Keys) - 2 - meta::count_for_pack_v<detail::is_insert_mode, meta::unqualified_t<Keys>...>));
@@ -724,7 +724,7 @@ namespace sol {
 
 		template <typename Name, typename... Args>
 		table create_named(Name&& name, Args&&... args) {
-			static const int narr = static_cast<int>(meta::count_even_for_pack_v<std::is_integral, Args...>);
+			const int narr = static_cast<int>(meta::count_even_for_pack_v<std::is_integral, Args...>);
 			return create(std::forward<Name>(name), narr, (sizeof...(Args) / 2) - narr, std::forward<Args>(args)...);
 		}
 	};
