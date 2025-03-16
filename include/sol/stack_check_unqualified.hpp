@@ -458,8 +458,8 @@ namespace sol { namespace stack {
 						handler(L_, index, type::function, t, "value is not a function and does not have valid metatable");
 						return false;
 					}
-					lua_getfield(L_, -1, &callkey[0]);
-					if (lua_isnoneornil(L_, -1)) {
+					type call_type = static_cast<type>(lua_getfield(L_, -1, &callkey[0]));
+					if (call_type == type::lua_nil || call_type == type::none) {
 						lua_pop(L_, 2);
 						handler(L_, index, type::function, t, "value's metatable does not have __call overridden in metatable, cannot call this type");
 						return false;
@@ -545,8 +545,8 @@ namespace sol { namespace stack {
 #endif // make sure stack doesn't overflow
 					auto pn = stack::pop_n(L_, 1);
 					lua_pushstring(L_, &detail::base_class_check_key()[0]);
-					lua_rawget(L_, metatableindex);
-					if (type_of(L_, -1) != type::lua_nil) {
+					type t = static_cast<type>(lua_rawget(L_, metatableindex));
+					if (t != type::lua_nil) {
 						void* basecastdata = lua_touserdata(L_, -1);
 						detail::inheritance_check_function ic = reinterpret_cast<detail::inheritance_check_function>(basecastdata);
 						success = ic(usertype_traits<T>::qualified_name());
@@ -627,8 +627,7 @@ namespace sol { namespace stack {
 				bool isnil = false;
 				for (; vi < static_cast<int>(lua_size<V>::value); ++vi) {
 					lua_pushinteger(arg_L, i);
-					lua_gettable(arg_L, static_cast<int>(index));
-					type vt = type_of(arg_L, -1);
+					type vt = static_cast<type>(lua_gettable(arg_L, static_cast<int>(index)));
 					isnil = vt == type::lua_nil;
 					if (isnil) {
 						if (i == 0) {
