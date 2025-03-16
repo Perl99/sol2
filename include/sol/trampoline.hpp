@@ -57,8 +57,7 @@ namespace sol {
 		}
 
 		inline int call_exception_handler(lua_State* L, optional<const std::exception&> maybe_ex, string_view what) {
-			lua_getglobal(L, default_exception_handler_name());
-			type t = static_cast<type>(lua_type(L, -1));
+			type t = static_cast<type>(lua_getglobal(L, default_exception_handler_name()));
 			if (t != type::lightuserdata) {
 				lua_pop(L, 1);
 				return default_exception_handler(L, std::move(maybe_ex), std::move(what));
