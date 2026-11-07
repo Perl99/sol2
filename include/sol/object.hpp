@@ -38,7 +38,7 @@ namespace sol {
 
 		template <bool invert_and_pop = false>
 		basic_object(std::integral_constant<bool, invert_and_pop>, lua_State* L_, int index_ = -1) noexcept : base_t(L_, index_) {
-			if (invert_and_pop) {
+			if constexpr (invert_and_pop) {
 				lua_pop(L_, -index_);
 			}
 		}

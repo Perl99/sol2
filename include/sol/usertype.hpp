@@ -47,7 +47,7 @@ namespace sol {
 		template <std::size_t... I, typename... Args>
 		void tuple_set(std::index_sequence<I...>, std::tuple<Args...>&& args) {
 			(void)args;
-			(void)detail::swallow { 0, (this->set(std::get<I * 2>(std::move(args)), std::get<I * 2 + 1>(std::move(args))), 0)... };
+			(..., (this->set(std::get<I * 2>(std::move(args)), std::get<I * 2 + 1>(std::move(args)))));
 		}
 
 		template <typename R, typename... Args, typename Fx, typename Key, typename = std::invoke_result_t<Fx, Args...>>

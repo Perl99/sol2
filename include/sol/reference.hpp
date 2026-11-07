@@ -245,10 +245,11 @@ namespace sol {
 		inline lua_State* pick_main_thread(lua_State* L_, lua_State* backup_if_unsupported = nullptr) {
 			(void)L_;
 			(void)backup_if_unsupported;
-			if (b) {
+			if constexpr (b) {
 				return main_thread(L_, backup_if_unsupported);
+			} else {
+				return L_;
 			}
-			return L_;
 		}
 	} // namespace detail
 

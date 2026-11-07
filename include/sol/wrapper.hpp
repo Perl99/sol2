@@ -30,7 +30,7 @@ namespace sol {
 
 	namespace detail {
 		template <typename T>
-		using array_return_type = meta::conditional_t<std::is_array<T>::value, std::add_lvalue_reference_t<T>, T>;
+		using array_return_type = meta::conditional_t<std::is_array_v<T>, std::add_lvalue_reference_t<T>, T>;
 	}
 
 	template <typename F, typename = void>
@@ -40,21 +40,16 @@ namespace sol {
 		typedef typename traits_type::args_list free_args_list;
 		typedef typename traits_type::returns_list returns_list;
 
-		template <typename... Args>
-		static decltype(auto) call(F& f, Args&&... args) {
-			return f(std::forward<Args>(args)...);
-		}
-
 		struct caller {
 			template <typename... Args>
 			decltype(auto) operator()(F& fx, Args&&... args) const {
-				return call(fx, std::forward<Args>(args)...);
+				return fx(std::forward<Args>(args)...);
 			}
 		};
 	};
 
 	template <typename F>
-	struct wrapper<F, std::enable_if_t<std::is_function<std::remove_pointer_t<meta::unqualified_t<F>>>::value>> {
+	struct wrapper<F, std::enable_if_t<std::is_function_v<std::remove_pointer_t<meta::unqualified_t<F>>>>> {
 		typedef lua_bind_traits<std::remove_pointer_t<meta::unqualified_t<F>>> traits_type;
 		typedef typename traits_type::args_list args_list;
 		typedef typename traits_type::args_list free_args_list;
@@ -65,15 +60,10 @@ namespace sol {
 			return fx(std::forward<Args>(args)...);
 		}
 
-		template <typename... Args>
-		static decltype(auto) call(F& fx, Args&&... args) {
-			return fx(std::forward<Args>(args)...);
-		}
-
 		struct caller {
 			template <typename... Args>
 			decltype(auto) operator()(F& fx, Args&&... args) const {
-				return call(fx, std::forward<Args>(args)...);
+				return fx(std::forward<Args>(args)...);
 			}
 		};
 
@@ -87,7 +77,7 @@ namespace sol {
 	};
 
 	template <typename F>
-	struct wrapper<F, std::enable_if_t<std::is_member_object_pointer<meta::unqualified_t<F>>::value>> {
+	struct wrapper<F, std::enable_if_t<std::is_member_object_pointer_v<meta::unqualified_t<F>>>> {
 		typedef lua_bind_traits<meta::unqualified_t<F>> traits_type;
 		typedef typename traits_type::object_type object_type;
 		typedef typename traits_type::return_type return_type;
@@ -156,15 +146,10 @@ namespace sol {
 			return (mem.*fx)(std::forward<Args>(args)...);
 		}
 
-		template <typename Fx, typename... Args>
-		static R call(Fx&& fx, O& mem, Args&&... args) {
-			return (mem.*fx)(std::forward<Args>(args)...);
-		}
-
 		struct caller {
 			template <typename Fx, typename... Args>
 			decltype(auto) operator()(Fx&& fx, O& mem, Args&&... args) const {
-				return call(std::forward<Fx>(fx), mem, std::forward<Args>(args)...);
+				return (mem.*fx)(std::forward<Args>(args)...);
 			}
 		};
 

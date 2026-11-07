@@ -245,11 +245,9 @@ namespace sol { namespace stack {
 					if (detail::unique_is_null(L, arg)) {
 						return stack::push(L, lua_nil);
 					}
-					return push_deep(L, std::forward<Arg>(arg), std::forward<Args>(args)...);
 				}
-				else {
-					return push_deep(L, std::forward<Arg>(arg), std::forward<Args>(args)...);
-				}
+
+				return push_deep(L, std::forward<Arg>(arg), std::forward<Args>(args)...);
 			}
 
 			template <typename... Args>
@@ -405,7 +403,7 @@ namespace sol { namespace stack {
 			lua_createtable(L, static_cast<int>(cont.size()), 0);
 			int tableindex = lua_gettop(L);
 			for (const auto& pair : cont) {
-				if (is_nested) {
+				if constexpr (is_nested) {
 					set_field(L, pair.first, as_nested_ref(pair.second), tableindex);
 				}
 				else {
@@ -432,7 +430,12 @@ namespace sol { namespace stack {
 				luaL_checkstack(L, 1, detail::not_enough_stack_space_generic);
 #endif // make sure stack doesn't overflow
 				lua_pushinteger(L, static_cast<lua_Integer>(index));
-				int p = is_nested ? stack::push(L, as_nested_ref(i)) : stack::push(L, i);
+				int p;
+				if constexpr (is_nested) {
+					p = stack::push(L, as_nested_ref(i));
+				} else {
+					p = stack::push(L, i);
+				}
 				if (p == 1) {
 					++index;
 					lua_settable(L, tableindex);
@@ -669,7 +672,7 @@ namespace sol { namespace stack {
 #endif // make sure stack doesn't overflow
        // A dumb pusher
 			T* data = detail::user_allocate<T>(L);
-			if (with_meta) {
+			if constexpr (with_meta) {
 				// Make sure we have a plain GC set for this data
 #if SOL_IS_ON(SOL_SAFE_STACK_CHECK)
 				luaL_checkstack(L, 1, detail::not_enough_stack_space_generic);
@@ -1251,7 +1254,7 @@ namespace sol { namespace stack {
 			luaL_checkstack(L, static_cast<int>(sizeof...(I)), detail::not_enough_stack_space_generic);
 #endif // make sure stack doesn't overflow
 			int pushcount = 0;
-			(void)detail::swallow { 0, (pushcount += stack::push(L, std::get<I>(std::forward<T>(t))), 0)... };
+			(..., (pushcount += stack::push(L, std::get<I>(std::forward<T>(t)))));
 			return pushcount;
 		}
 

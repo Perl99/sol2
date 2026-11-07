@@ -715,17 +715,18 @@ namespace sol {
 
 			static detail::error_result set_comparative(std::true_type, lua_State* L_, T& self, stack_object okey, stack_object value) {
 				decltype(auto) key = okey.as<K>();
-				if (!is_writable::value) {
+				if constexpr (!is_writable::value) {
 					return detail::error_result(
 					     "cannot perform a 'set': '%s's iterator reference is not writable (non-copy-assignable or const)", detail::demangle<T>().data());
+				} else {
+					auto fx = [&](const value_type& r) -> bool { return key == get_key(is_associative(), r); };
+					auto e = deferred_uc::end(L_, self);
+					auto it = std::find_if(deferred_uc::begin(L_, self), e, std::ref(fx));
+					if (it == e) {
+						return {};
+					}
+					return set_writable(is_writable(), L_, self, it, std::move(value));
 				}
-				auto fx = [&](const value_type& r) -> bool { return key == get_key(is_associative(), r); };
-				auto e = deferred_uc::end(L_, self);
-				auto it = std::find_if(deferred_uc::begin(L_, self), e, std::ref(fx));
-				if (it == e) {
-					return {};
-				}
-				return set_writable(is_writable(), L_, self, it, std::move(value));
 			}
 
 			static detail::error_result set_comparative(std::false_type, lua_State*, T&, stack_object, stack_object) {
@@ -1451,7 +1452,7 @@ namespace sol {
 			static int find(std::true_type, lua_State* L_) {
 				T& self = get_src(L_);
 				decltype(auto) value = stack::unqualified_get<value_type>(L_, 2);
-				std::size_t N = std::extent<T>::value;
+				std::size_t N = std::extent_v<T>;
 				for (std::size_t idx = 0; idx < N; ++idx) {
 					using v_t = std::add_const_t<decltype(self[idx])>;
 					v_t v = self[idx];
@@ -1521,7 +1522,7 @@ namespace sol {
 				T& self = get_src(L_);
 				std::ptrdiff_t idx = stack::unqualified_get<std::ptrdiff_t>(L_, 2);
 				idx += deferred_uc::index_adjustment(L_, self);
-				if (idx >= static_cast<std::ptrdiff_t>(std::extent<T>::value)) {
+				if (idx >= static_cast<std::ptrdiff_t>(std::extent_v<T>)) {
 					return luaL_error(L_, "sol: index out of bounds (too big) for set on '%s'", detail::demangle<T>().c_str());
 				}
 				if (idx < 0) {
@@ -1544,11 +1545,11 @@ namespace sol {
 			}
 
 			static int size(lua_State* L_) {
-				return stack::push(L_, std::extent<T>::value);
+				return stack::push(L_, std::extent_v<T>);
 			}
 
 			static int empty(lua_State* L_) {
-				return stack::push(L_, std::extent<T>::value > 0);
+				return stack::push(L_, std::extent_v<T> > 0);
 			}
 
 			static int pairs(lua_State* L_) {
@@ -1576,7 +1577,7 @@ namespace sol {
 			}
 
 			static sentinel end(lua_State*, T& self) {
-				return std::addressof(self[0]) + std::extent<T>::value;
+				return std::addressof(self[0]) + std::extent_v<T>;
 			}
 		};
 

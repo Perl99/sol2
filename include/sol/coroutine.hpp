@@ -95,7 +95,7 @@ namespace sol {
 		basic_coroutine(T&& r) noexcept
 		: base_t(std::forward<T>(r)), m_error_handler(detail::get_default_handler<reference, is_main_threaded<base_t>::value>(r.lua_state())) {
 #if SOL_IS_ON(SOL_SAFE_REFERENCES)
-			if (!is_function<meta::unqualified_t<T>>::value) {
+			if constexpr (!is_function<meta::unqualified_t<T>>::value) {
 				auto pp = stack::push_pop(*this);
 				constructor_handler handler {};
 				stack::check<basic_coroutine>(lua_state(), -1, handler);

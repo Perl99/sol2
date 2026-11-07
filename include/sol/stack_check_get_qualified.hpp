@@ -82,7 +82,7 @@ namespace sol { namespace stack {
 				}
 				else {
 					memory = detail::align_usertype_unique_tag<true, false>(memory);
-					detail::unique_tag& ic = *reinterpret_cast<detail::unique_tag*>(memory);
+					detail::unique_tag& ic = *static_cast<detail::unique_tag*>(memory);
 					memory = detail::align_usertype_unique<actual, true, false>(memory);
 					string_view ti = usertype_traits<element>::qualified_name();
 					int cast_operation;

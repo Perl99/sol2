@@ -187,7 +187,7 @@ namespace sol { namespace stack {
 	struct qualified_getter {
 		static decltype(auto) get(lua_State* L, int index, record& tracking) {
 			using Tu = meta::unqualified_t<X>;
-			static constexpr bool is_maybe_userdata_of_some_kind
+			constexpr bool is_maybe_userdata_of_some_kind
 				= !std::is_reference_v<
 				       X> && is_container_v<Tu> && std::is_default_constructible_v<Tu> && !is_lua_primitive_v<Tu> && !is_transparent_argument_v<Tu>;
 			if constexpr (is_maybe_userdata_of_some_kind) {
@@ -220,7 +220,7 @@ namespace sol { namespace stack {
 				}
 				else {
 					memory = detail::align_usertype_unique_tag<true, false>(memory);
-					detail::unique_tag& ic = *reinterpret_cast<detail::unique_tag*>(memory);
+					detail::unique_tag& ic = *static_cast<detail::unique_tag*>(memory);
 					memory = detail::align_usertype_unique<actual, true, false>(memory);
 					string_view ti = usertype_traits<element>::qualified_name();
 					int cast_operation;
@@ -916,7 +916,7 @@ namespace sol { namespace stack {
 				}
 			}
 			if constexpr (std::is_function_v<T>) {
-				T* func = reinterpret_cast<T*>(udata);
+				T* func = static_cast<T*>(udata);
 				return func;
 			}
 			else {

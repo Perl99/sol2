@@ -53,7 +53,7 @@ namespace sol { namespace stack {
 					}
 					if constexpr (derive<element>::value) {
 						memory = detail::align_usertype_unique_tag<true, false>(memory);
-						detail::unique_tag& ic = *reinterpret_cast<detail::unique_tag*>(memory);
+						detail::unique_tag& ic = *static_cast<detail::unique_tag*>(memory);
 						string_view ti = usertype_traits<element>::qualified_name();
 						string_view rebind_ti = usertype_traits<rebound_actual_type>::qualified_name();
 						if (ic(nullptr, nullptr, ti, rebind_ti) != 0) {

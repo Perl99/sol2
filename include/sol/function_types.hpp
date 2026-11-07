@@ -213,7 +213,7 @@ namespace sol {
 			}
 			else if constexpr (is_lua_c_function_v<uFx>) {
 				if constexpr (no_trampoline) {
-					if (is_yielding) {
+					if constexpr (is_yielding) {
 						int upvalues = 0;
 						upvalues += stack::push(L, nullptr);
 						upvalues += stack::push(L, std::forward<Fx>(fx));

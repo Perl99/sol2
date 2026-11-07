@@ -82,13 +82,13 @@ namespace sol { namespace meta {
 	struct all_same : std::true_type { };
 
 	template <typename T, typename U, typename... Args>
-	struct all_same<T, U, Args...> : std::integral_constant<bool, std::is_same<T, U>::value && all_same<T, Args...>::value> { };
+	struct all_same<T, U, Args...> : std::integral_constant<bool, std::is_same_v<T, U> && all_same<T, Args...>::value> { };
 
 	template <typename T, typename...>
 	struct any_same : std::false_type { };
 
 	template <typename T, typename U, typename... Args>
-	struct any_same<T, U, Args...> : std::integral_constant<bool, std::is_same<T, U>::value || any_same<T, Args...>::value> { };
+	struct any_same<T, U, Args...> : std::integral_constant<bool, std::is_same_v<T, U> || any_same<T, Args...>::value> { };
 
 	template <typename T, typename... Args>
 	constexpr inline bool any_same_v = any_same<T, Args...>::value;
@@ -277,13 +277,13 @@ namespace sol { namespace meta {
 
 		template <typename T>
 		struct is_invocable<T,
-			std::enable_if_t<std::is_final<unqualified_t<T>>::value && std::is_class<unqualified_t<T>>::value
-			     && std::is_same<decltype(void(&T::operator())), void>::value>> { };
+			std::enable_if_t<std::is_final_v<unqualified_t<T>> && std::is_class_v<unqualified_t<T>>
+			     && std::is_same_v<decltype(void(&T::operator())), void>>> { };
 
 		template <typename T>
 		struct is_invocable<T,
-			std::enable_if_t<!std::is_final<unqualified_t<T>>::value && std::is_class<unqualified_t<T>>::value
-			     && std::is_destructible<unqualified_t<T>>::value>> {
+			std::enable_if_t<!std::is_final_v<unqualified_t<T>> && std::is_class_v<unqualified_t<T>>
+			     && std::is_destructible_v<unqualified_t<T>>>> {
 			struct F {
 				void operator()() {};
 			};
@@ -302,8 +302,8 @@ namespace sol { namespace meta {
 
 		template <typename T>
 		struct is_invocable<T,
-			std::enable_if_t<!std::is_final<unqualified_t<T>>::value && std::is_class<unqualified_t<T>>::value
-			     && !std::is_destructible<unqualified_t<T>>::value>> {
+			std::enable_if_t<!std::is_final_v<unqualified_t<T>> && std::is_class_v<unqualified_t<T>>
+			     && !std::is_destructible_v<unqualified_t<T>>>> {
 			struct F {
 				void operator()() {};
 			};

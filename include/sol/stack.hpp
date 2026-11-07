@@ -118,7 +118,7 @@ namespace sol {
 				for (std::size_t i = 0, d = 0; d < sizeof(T); ++i, d += sizeof(void*)) {
 					voiddata[i] = lua_touserdata(L, upvalue_index(index++));
 				}
-				return std::pair<T, int>(*reinterpret_cast<T*>(static_cast<void*>(voiddata.data())), index);
+				return std::pair<T, int>(*static_cast<T*>(static_cast<void*>(voiddata.data())), index);
 			}
 
 			template <typename T>
@@ -140,7 +140,7 @@ namespace sol {
 					++index;
 				}
 				lua_pop(L, index);
-				return std::pair<T, int>(*reinterpret_cast<T*>(static_cast<void*>(voiddata.data())), index);
+				return std::pair<T, int>(*static_cast<T*>(static_cast<void*>(voiddata.data())), index);
 			}
 
 			template <bool checked, typename Handler, typename Fx, typename... Args>

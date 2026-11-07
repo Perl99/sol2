@@ -138,7 +138,7 @@ namespace sol { namespace stack {
 		template <std::size_t... I, typename Keys>
 		void apply(std::index_sequence<0, I...>, lua_State* L, Keys&& keys, int tableindex) {
 			get_field<b, raw>(L, std::get<0>(std::forward<Keys>(keys)), tableindex);
-			void(detail::swallow { (get_field<false, raw>(L, std::get<I>(std::forward<Keys>(keys))), 0)... });
+			(..., get_field<false, raw>(L, std::get<I>(std::forward<Keys>(keys))));
 			reference saved(L, -1);
 			lua_pop(L, static_cast<int>(sizeof...(I)));
 			saved.push();
@@ -242,14 +242,20 @@ namespace sol { namespace stack {
 	struct field_setter<std::tuple<Args...>, b, raw, C> {
 		template <bool g, std::size_t I, typename Keys, typename Value>
 		void apply(std::index_sequence<I>, lua_State* L, Keys&& keys, Value&& value, int tableindex) {
-			I < 1 ? set_field<g, raw>(L, std::get<I>(std::forward<Keys>(keys)), std::forward<Value>(value), tableindex)
-				 : set_field<g, raw>(L, std::get<I>(std::forward<Keys>(keys)), std::forward<Value>(value));
+			if constexpr (I < 1) {
+				set_field<g, raw>(L, std::get<I>(std::forward<Keys>(keys)), std::forward<Value>(value), tableindex);
+			} else {
+				set_field<g, raw>(L, std::get<I>(std::forward<Keys>(keys)), std::forward<Value>(value));
+			}
 		}
 
 		template <bool g, std::size_t I0, std::size_t I1, std::size_t... I, typename Keys, typename Value>
 		void apply(std::index_sequence<I0, I1, I...>, lua_State* L, Keys&& keys, Value&& value, int tableindex) {
-			I0 < 1 ? get_field<g, raw>(L, std::get<I0>(std::forward<Keys>(keys)), tableindex)
-				  : get_field<g, raw>(L, std::get<I0>(std::forward<Keys>(keys)), -1);
+			if constexpr (I0 < 1) {
+				get_field<g, raw>(L, std::get<I0>(std::forward<Keys>(keys)), tableindex);
+			} else {
+				get_field<g, raw>(L, std::get<I0>(std::forward<Keys>(keys)), -1);
+			}
 			apply<false>(std::index_sequence<I1, I...>(), L, std::forward<Keys>(keys), std::forward<Value>(value), -1);
 		}
 

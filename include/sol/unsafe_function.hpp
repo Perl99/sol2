@@ -45,13 +45,13 @@ namespace sol {
 
 		template <std::size_t... I, typename... Ret>
 		auto invoke(types<Ret...>, std::index_sequence<I...>, std::ptrdiff_t n) const {
-			luacall(n, lua_size<std::tuple<Ret...>>::value);
+			luacall(n, lua_size_v<std::tuple<Ret...>>);
 			return stack::pop<std::tuple<Ret...>>(lua_state());
 		}
 
 		template <std::size_t I, typename Ret, meta::enable<meta::neg<std::is_void<Ret>>> = meta::enabler>
 		Ret invoke(types<Ret>, std::index_sequence<I>, std::ptrdiff_t n) const {
-			luacall(n, lua_size<Ret>::value);
+			luacall(n, lua_size_v<Ret>);
 			return stack::pop<Ret>(lua_state());
 		}
 
@@ -78,7 +78,7 @@ namespace sol {
 		          meta::neg<std::is_same<lua_nil_t, meta::unqualified_t<T>>>, is_lua_reference<meta::unqualified_t<T>>> = meta::enabler>
 		basic_function(T&& r) noexcept : base_t(std::forward<T>(r)) {
 #if SOL_IS_ON(SOL_SAFE_REFERENCES)
-			if (!is_function<meta::unqualified_t<T>>::value) {
+			if constexpr (!is_function<meta::unqualified_t<T>>::value) {
 				auto pp = stack::push_pop(*this);
 				constructor_handler handler {};
 				stack::check<basic_function>(lua_state(), -1, handler);
@@ -158,7 +158,7 @@ namespace sol {
 
 		template <typename... Ret, typename... Args>
 		decltype(auto) call(Args&&... args) const {
-			if (!aligned) {
+			if constexpr (!aligned) {
 				base_t::push();
 			}
 			int pushcount = stack::multi_push_reference(lua_state(), std::forward<Args>(args)...);

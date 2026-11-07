@@ -638,7 +638,7 @@ namespace sol {
 		}
 	};
 
-	const new_table create = {};
+	constexpr new_table create = {};
 
 	enum class lib : unsigned char {
 		// print, assert, and other base functions

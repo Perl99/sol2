@@ -43,14 +43,14 @@ namespace sol { namespace detail {
 		int stack_index;
 
 		protected_handler(std::false_type, lua_State* L_, const Target& target_) : m_L(L_), target(target_), stack_index(0) {
-			if (ShouldPush) {
+			if constexpr (ShouldPush) {
 				stack_index = lua_gettop(L_) + 1;
 				target.push(L_);
 			}
 		}
 
 		protected_handler(std::true_type, lua_State* L_, const Target& target_) : m_L(L_), target(target_), stack_index(0) {
-			if (ShouldPush) {
+			if constexpr (ShouldPush) {
 				stack_index = target.stack_index();
 			}
 		}
@@ -80,7 +80,9 @@ namespace sol { namespace detail {
 	inline Reference get_default_handler(lua_State* L_) {
 		if (is_stack_based_v<Reference> || L_ == nullptr)
 			return Reference(L_, lua_nil);
-		L_ = IsMainReference ? main_thread(L_, L_) : L_;
+		if constexpr (IsMainReference) {
+			L_ = main_thread(L_, L_);
+		}
 		lua_getglobal(L_, default_handler_name());
 		auto pp = stack::pop_n(L_, 1);
 		return Reference(L_, -1);
