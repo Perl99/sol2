@@ -343,7 +343,8 @@ namespace sol {
 
 		template <typename T, bool checked, bool clean_stack, typename... TypeLists>
 		inline int construct(lua_State* L) {
-			return detail::static_trampoline<&construct_trampolined<T, checked, clean_stack, TypeLists...>>(L);
+			return detail::lua_cfunction_trampoline(L, &construct_trampolined<T, checked, clean_stack, TypeLists...>);
+
 		}
 
 		template <typename F, bool is_index, bool is_variable, bool checked, int boost, bool clean_stack, typename = void>
