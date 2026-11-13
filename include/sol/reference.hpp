@@ -296,16 +296,16 @@ namespace sol {
 			ref = luaL_ref(L_, LUA_REGISTRYINDEX);
 		}
 
-		stateless_reference(int raw_ref_index) noexcept : ref(raw_ref_index) {
+		explicit stateless_reference(int raw_ref_index) noexcept : ref(raw_ref_index) {
 		}
 
 	public:
 		stateless_reference() noexcept = default;
-		stateless_reference(lua_nil_t) noexcept : stateless_reference() {
+		explicit stateless_reference(lua_nil_t) noexcept : stateless_reference() {
 		}
-		stateless_reference(const stack_reference& r) noexcept : stateless_reference(r.lua_state(), r.stack_index()) {
+		explicit stateless_reference(const stack_reference& r) noexcept : stateless_reference(r.lua_state(), r.stack_index()) {
 		}
-		stateless_reference(stack_reference&& r) noexcept : stateless_reference(r.lua_state(), r.stack_index()) {
+		explicit stateless_reference(stack_reference&& r) noexcept : stateless_reference(r.lua_state(), r.stack_index()) {
 		}
 		stateless_reference(lua_State* L_, const stateless_reference& r) noexcept {
 			if (r.ref == LUA_REFNIL) {
@@ -889,6 +889,8 @@ namespace sol {
 		}
 
 		using stateless_stack_reference_hash::operator();
+
+		result_type operator()(lua_nil_t) const noexcept = delete;
 
 		result_type operator()(const stateless_reference& lhs) const noexcept {
 			std::hash<const void*> h;
