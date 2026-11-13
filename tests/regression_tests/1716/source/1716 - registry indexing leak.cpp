@@ -57,5 +57,9 @@ TEST_CASE("#1716 - index and newindex should not leak values into the registry",
 			end
 		)");
 
-	REQUIRE(lua.registry().size() <= begin + 1);
+	// the registry index grows and shrinks through free-list reuse, so an exact
+	// boundary is not stable across Lua versions or allocator state. The
+	// regression this guards is two slots per access, i.e. +200 here, which is
+	// far outside the slack.
+	REQUIRE(lua.registry().size() <= begin + 16);
 }

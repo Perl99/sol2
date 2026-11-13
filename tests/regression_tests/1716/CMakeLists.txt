@@ -24,7 +24,7 @@
 
 file(GLOB_RECURSE sources
 	LIST_DIRECTORIES FALSE
-	CONFIG_DEPENDS source/*.cpp)
+	CONFIGURE_DEPENDS source/*.cpp)
 
 sol2_create_basic_test(sol2.tests.regression_1716 sol2::sol2 ${sources})
 sol2_create_basic_test(sol2.tests.regression_1716.SOL_ALL_SAFETIES_ON sol2::sol2 ${sources})
