@@ -125,7 +125,7 @@ namespace sol {
 		}
 
 		bool equals(lua_State* L_, lua_nil_t) const noexcept {
-			return valid(L_);
+			return !valid(L_);
 		}
 	};
 

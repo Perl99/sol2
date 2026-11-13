@@ -284,6 +284,16 @@ namespace sol { namespace u_detail {
 		}
 	};
 
+	template <typename T>
+	stateless_reference make_stateless_reference(lua_State* L, T&& ref) {
+		if constexpr (std::is_base_of_v<stateless_reference, meta::unwrap_unqualified_t<T>>) {
+			return stateless_reference(L, std::forward<T>(ref));
+		}
+		else {
+			return stateless_reference(L, static_cast<const stateless_stack_reference&>(ref));
+		}
+	}
+
 	struct usertype_storage_base {
 	public:
 		lua_State* m_L;
@@ -372,6 +382,19 @@ namespace sol { namespace u_detail {
 			std::memcpy(sv_storage.get(), sv.data(), sv.size());
 			string_view stored_sv(sv_storage.get(), sv.size());
 			string_keys.insert_or_assign(std::move(stored_sv), std::move(ics));
+		}
+
+		void set_auxiliary_key(lua_State* L_, stateless_reference key, stateless_reference value) {
+			auto it = this->auxiliary_keys.find(key);
+			if (it == this->auxiliary_keys.end()) {
+				this->auxiliary_keys.insert_or_assign(std::move(key), std::move(value));
+				return;
+			}
+			// using "insert_or_assign" directly would leak memory because stateless_reference dtor does not call deref(),
+			// so we are doing it manually on value replace
+			key.deref(L_);
+			it->second.deref(L_);
+			it->second = std::move(value);
 		}
 
 		template <typename T, typename... Bases>
@@ -503,7 +526,11 @@ namespace sol { namespace u_detail {
 					stateless_reference* target = nullptr;
 					{
 						stack_reference k = stack::get<stack_reference>(L, 2);
+#if __cpp_lib_generic_unordered_lookup >= 201811L
 						auto it = self.auxiliary_keys.find(k);
+#else
+						auto it = self.auxiliary_keys.find(basic_reference(k));
+#endif
 						if (it != self.auxiliary_keys.cend()) {
 							target = &it->second;
 						}
@@ -785,7 +812,7 @@ namespace sol { namespace u_detail {
 					lua_reference_func ref_additions_fx { key, value };
 
 					this->for_each_table(L, ref_additions_fx);
-					this->auxiliary_keys.insert_or_assign(std::forward<Key>(key), std::forward<Value>(value));
+					this->set_auxiliary_key(L, make_stateless_reference(L, std::forward<Key>(key)), make_stateless_reference(L, std::forward<Value>(value)));
 				}
 			}
 			else {
@@ -794,7 +821,7 @@ namespace sol { namespace u_detail {
 				lua_reference_func ref_additions_fx { ref_key, ref_value };
 
 				this->for_each_table(L, ref_additions_fx);
-				this->auxiliary_keys.insert_or_assign(std::move(ref_key), std::move(ref_value));
+				this->set_auxiliary_key(L, std::move(ref_key), std::move(ref_value));
 			}
 		}
 	}

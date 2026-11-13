@@ -297,16 +297,16 @@ namespace sol {
 			ref = luaL_ref(L_, LUA_REGISTRYINDEX);
 		}
 
-		stateless_reference(int raw_ref_index) noexcept : ref(raw_ref_index) {
+		explicit stateless_reference(int raw_ref_index) noexcept : ref(raw_ref_index) {
 		}
 
 	public:
 		stateless_reference() noexcept = default;
-		stateless_reference(lua_nil_t) noexcept : stateless_reference() {
+		explicit stateless_reference(lua_nil_t) noexcept : stateless_reference() {
 		}
-		stateless_reference(const stack_reference& r) noexcept : stateless_reference(r.lua_state(), r.stack_index()) {
+		explicit stateless_reference(const stack_reference& r) noexcept : stateless_reference(r.lua_state(), r.stack_index()) {
 		}
-		stateless_reference(stack_reference&& r) noexcept : stateless_reference(r.lua_state(), r.stack_index()) {
+		explicit stateless_reference(stack_reference&& r) noexcept : stateless_reference(r.lua_state(), r.stack_index()) {
 		}
 		stateless_reference(lua_State* L_, const stateless_reference& r) noexcept {
 			if (r.ref == LUA_REFNIL) {
@@ -470,7 +470,7 @@ namespace sol {
 		}
 
 		bool equals(lua_State* L_, lua_nil_t) const noexcept {
-			return valid(L_);
+			return !valid(L_);
 		}
 	};
 
@@ -829,6 +829,8 @@ namespace sol {
 		stateless_reference_equals(lua_State* L_) noexcept : stateless_stack_reference_equals(L_) {
 		}
 
+		using stateless_stack_reference_equals::operator();
+
 		bool operator()(const lua_nil_t& lhs, const stateless_reference& rhs) const noexcept {
 			return rhs.equals(lua_state(), lhs);
 		}
@@ -838,6 +840,14 @@ namespace sol {
 		}
 
 		bool operator()(const stateless_reference& lhs, const stateless_reference& rhs) const noexcept {
+			return lhs.equals(lua_state(), rhs);
+		}
+
+		bool operator()(const stateless_stack_reference& lhs, const stateless_reference& rhs) const noexcept {
+			return rhs.equals(lua_state(), lhs);
+		}
+
+		bool operator()(const stateless_reference& lhs, const stateless_stack_reference& rhs) const noexcept {
 			return lhs.equals(lua_state(), rhs);
 		}
 	};
@@ -878,6 +888,10 @@ namespace sol {
 
 		stateless_reference_hash(lua_State* L_) noexcept : stateless_stack_reference_hash(L_) {
 		}
+
+		using stateless_stack_reference_hash::operator();
+
+		result_type operator()(lua_nil_t) const noexcept = delete;
 
 		result_type operator()(const stateless_reference& lhs) const noexcept {
 			std::hash<const void*> h;
