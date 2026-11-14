@@ -79,13 +79,7 @@ namespace sol {
 		using is_get_direct_tableless = meta::boolean<stack::stack_detail::is_get_direct_tableless_v<T, top_level, false>>;
 
 		template <typename T>
-		using is_raw_get_direct_tableless = std::false_type;
-
-		template <typename T>
 		using is_set_direct_tableless = meta::boolean<stack::stack_detail::is_set_direct_tableless_v<T, top_level, false>>;
-
-		template <typename T>
-		using is_raw_set_direct_tableless = std::false_type;
 
 		template <bool raw, typename... Ret, typename... Keys>
 		decltype(auto) tuple_get(int table_index, Keys&&... keys) const {
@@ -116,7 +110,7 @@ namespace sol {
 
 		template <bool raw, typename Ret, typename... Keys>
 		decltype(auto) traverse_get_single(int table_index, Keys&&... keys) const {
-			constexpr static bool global = (meta::count_for_to_pack_v < 1, is_get_direct_tableless, meta::unqualified_t<Keys>... >> 0);
+			constexpr static bool global = meta::first_satisfies_v < is_get_direct_tableless, meta::unqualified_t<Keys>... >;
 			if constexpr (meta::is_optional_v<meta::unqualified_t<Ret>>) {
 				int popcount = 0;
 				detail::ref_clean c(base_t::lua_state(), popcount);
@@ -130,8 +124,8 @@ namespace sol {
 
 		template <bool raw, typename Pairs, std::size_t... I>
 		void tuple_set(std::index_sequence<I...>, Pairs&& pairs) {
-			constexpr static bool global = (meta::count_even_for_pack_v < is_set_direct_tableless,
-			     meta::unqualified_t<decltype(std::get<I * 2>(std::forward<Pairs>(pairs)))>... >> 0);
+			constexpr static bool global
+			     = meta::all<is_set_direct_tableless<meta::unqualified_t<decltype(std::get<I * 2>(std::forward<Pairs>(pairs)))>>...>::value;
 			auto pp = stack::push_pop<global>(*this);
 			int table_index = pp.index_of(*this);
 			lua_State* L = base_t::lua_state();
@@ -200,7 +194,7 @@ namespace sol {
 					if (!p.success) {
 						if constexpr ((mode & detail::insert_mode::create_if_nil) == detail::insert_mode::create_if_nil) {
 							lua_pop(L, 1);
-							constexpr bool is_seq = meta::count_for_to_pack_v < 1, std::is_integral, Keys... >> 0;
+							constexpr bool is_seq = meta::first_satisfies_v < std::is_integral, Keys... >;
 							stack::push(L, new_table(static_cast<int>(is_seq), static_cast<int>(!is_seq)));
 							stack::set_field<global, raw>(L, std::forward<Key>(key), stack_reference(L, -1), table_index);
 						}
@@ -271,7 +265,7 @@ namespace sol {
 						if constexpr ((mode & detail::insert_mode::update_if_empty) == detail::insert_mode::update_if_empty
 						     || (mode & detail::insert_mode::create_if_nil) == detail::insert_mode::create_if_nil) {
 							if (vt == type::lua_nil || vt == type::none) {
-								constexpr bool is_seq = meta::count_for_to_pack_v < 1, std::is_integral, Keys... >> 0;
+								constexpr bool is_seq = meta::first_satisfies_v < std::is_integral, Keys... >;
 								lua_pop(L, 1);
 								stack::push(L, new_table(static_cast<int>(is_seq), static_cast<int>(!is_seq)));
 								stack::set_field<global, raw>(L, std::forward<Key>(key), stack_reference(L, -1), table_index);
@@ -279,7 +273,7 @@ namespace sol {
 						}
 						else {
 							if (vt != type::table) {
-								constexpr bool is_seq = meta::count_for_to_pack_v < 1, std::is_integral, Keys... >> 0;
+								constexpr bool is_seq = meta::first_satisfies_v < std::is_integral, Keys... >;
 								lua_pop(L, 1);
 								stack::push(L, new_table(static_cast<int>(is_seq), static_cast<int>(!is_seq)));
 								stack::set_field<global, raw>(L, std::forward<Key>(key), stack_reference(L, -1), table_index);
@@ -444,7 +438,7 @@ namespace sol {
 		template <typename T, typename... Keys>
 		decltype(auto) traverse_get(Keys&&... keys) const {
 			static_assert(sizeof...(Keys) > 0, "must pass at least 1 key to get");
-			constexpr static bool global = (meta::count_for_to_pack_v < 1, is_get_direct_tableless, meta::unqualified_t<Keys>... >> 0);
+			constexpr static bool global = meta::first_satisfies_v < is_get_direct_tableless, meta::unqualified_t<Keys>... >;
 			auto pp = stack::push_pop<global>(*this);
 			int table_index = pp.index_of(*this);
 			return traverse_get_single<false, T>(table_index, std::forward<Keys>(keys)...);
@@ -453,8 +447,7 @@ namespace sol {
 		template <typename... Keys>
 		basic_table_core& traverse_set(Keys&&... keys) {
 			static_assert(sizeof...(Keys) > 1, "must pass at least 1 key and 1 value to set");
-			constexpr static bool global
-			     = (meta::count_when_for_to_pack_v < detail::is_not_insert_mode, 1, is_set_direct_tableless, meta::unqualified_t<Keys>... >> 0);
+			constexpr static bool global = meta::first_satisfies_v < is_set_direct_tableless, meta::unqualified_t<Keys>... >;
 			auto pp = stack::push_pop<global>(*this);
 			int table_index = pp.index_of(*this);
 			lua_State* L = base_t::lua_state();
@@ -477,8 +470,7 @@ namespace sol {
 		template <typename... Ret, typename... Keys>
 		decltype(auto) raw_get(Keys&&... keys) const {
 			static_assert(sizeof...(Keys) == sizeof...(Ret), "number of keys and number of return types do not match");
-			constexpr static bool global = (meta::count_for_to_pack_v < 1, is_raw_get_direct_tableless, meta::unqualified_t<Keys>... >> 0);
-			auto pp = stack::push_pop<global>(*this);
+			auto pp = stack::push_pop<false>(*this);
 			int table_index = pp.index_of(*this);
 			return tuple_get<true, Ret...>(table_index, std::forward<Keys>(keys)...);
 		}
@@ -504,19 +496,19 @@ namespace sol {
 
 		template <typename T, typename... Keys>
 		decltype(auto) traverse_raw_get(Keys&&... keys) const {
-			constexpr static bool global = (meta::count_for_to_pack_v < 1, is_raw_get_direct_tableless, meta::unqualified_t<Keys>... >> 0);
-			auto pp = stack::push_pop<global>(*this);
+			auto pp = stack::push_pop<false>(*this);
 			int table_index = pp.index_of(*this);
 			return traverse_get_single<true, T>(table_index, std::forward<Keys>(keys)...);
 		}
 
 		template <typename... Keys>
 		basic_table_core& traverse_raw_set(Keys&&... keys) {
-			constexpr static bool global = (meta::count_for_to_pack_v < 1, is_raw_set_direct_tableless, meta::unqualified_t<Keys>... >> 0);
-			auto pp = stack::push_pop<global>(*this);
+			static_assert(sizeof...(Keys) > 1, "must pass at least 1 key and 1 value to set");
+			auto pp = stack::push_pop<false>(*this);
+			int table_index = pp.index_of(*this);
 			lua_State* L = base_t::lua_state();
 			auto pn = stack::pop_n(L, static_cast<int>(sizeof...(Keys) - 2 - meta::count_for_pack_v<detail::is_insert_mode, meta::unqualified_t<Keys>...>));
-			traverse_set_deep<top_level, true, false>(std::forward<Keys>(keys)...);
+			traverse_set_deep<top_level, true, detail::insert_mode::none>(table_index, std::forward<Keys>(keys)...);
 			return *this;
 		}
 
@@ -690,7 +682,7 @@ namespace sol {
 		template <typename... Args>
 		static inline table create_with(lua_State* L, Args&&... args) {
 			static_assert(sizeof...(Args) % 2 == 0, "You must have an even number of arguments for a key, value ... list.");
-			constexpr int narr = static_cast<int>(meta::count_odd_for_pack_v<std::is_integral, Args...>);
+			constexpr int narr = static_cast<int>(meta::count_even_for_pack_v<std::is_integral, Args...>);
 			return create(L, narr, static_cast<int>((sizeof...(Args) / 2) - narr), std::forward<Args>(args)...);
 		}
 

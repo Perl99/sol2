@@ -515,9 +515,8 @@ namespace sol { namespace meta {
 			using args_tuple = std::tuple<Arg>;
 			using args_list = types<Arg>;
 			using free_args_list = types<T, Arg>;
-		    using returns_list = meta::tuple_types<return_type>;
-			// This is probably a mistake prolly meant (T& , Arg)
-			using function_type =  return_type(T&, return_type);
+			using returns_list = meta::tuple_types<return_type>;
+			using function_type = return_type(T&, return_type);
 			using function_pointer_type = return_type (*)(T&, Arg);
 			using free_function_pointer_type = function_pointer_type;
 			template <std::size_t i>

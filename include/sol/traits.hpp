@@ -32,6 +32,8 @@
 
 #include <type_traits>
 #include <cstdint>
+#include <cstddef>
+#include <initializer_list>
 #include <memory>
 #include <functional>
 #include <array>
@@ -175,14 +177,10 @@ namespace sol { namespace meta {
 	using index_in_pack = constant<(meta_detail::index_of({ std::is_same_v<T, Args>... }))>;
 
 	template <typename T, typename... Ts>
-	using find_in_pack_v = boolean<(index_in_pack<T, Ts...>::value != -1)>;
+	using find_in_pack = boolean<(index_in_pack<T, Ts...>::value != -1)>;
 
-	// this is probably wrong
-	template <typename T, typename List>
-	struct index_in : index_in_pack<T, List> { };
-
-	template <typename T, typename... Args>
-	struct index_in<T, types<Args...>> : index_in_pack<T, Args...> { };
+	template <typename T, typename... Ts>
+	constexpr inline bool find_in_pack_v = find_in_pack<T, Ts...>::value;
 
 	template <std::size_t I, typename... Args>
 	struct at_in_pack { };
@@ -202,41 +200,33 @@ namespace sol { namespace meta {
 		template <typename, typename TI>
 		using on_even = meta::boolean<(TI::value % 2) == 0>;
 
-		template <typename, typename TI>
-		using on_odd = meta::boolean<(TI::value % 2) == 1>;
-
 		template <typename, typename>
 		using on_always = std::true_type;
 
-
-
 		constexpr std::size_t count_when_for_pack_impl(
-			const std::initializer_list<bool> should_apply, const std::initializer_list<bool> satifies, const std::size_t limit) {
-			const auto size = satifies.size();
+			const std::initializer_list<bool> should_apply, const std::initializer_list<bool> satisfies, const std::size_t satisfy_limit) {
+			const auto size = satisfies.size();
 
-			const auto* satify_pointer = satifies.begin();
+			const auto* satisfies_pointer = satisfies.begin();
 			const auto* should_apply_pointer = should_apply.begin();
 			std::size_t count = 0;
 			for (std::size_t i = 0; i < size; ++i) {
-				if (should_apply_pointer[i] && satify_pointer[i]) {
+				if (should_apply_pointer[i] && satisfies_pointer[i]) {
 					++count;
-					if (count >= limit)
+					if (count >= satisfy_limit)
 						return count;
 				}
 			}
 			return count;
 		}
 
-
-		template <template <typename...> class When, std::size_t Limit, template <typename...> class Pred, typename, typename... Ts>
+		template <template <typename...> class When, std::size_t SatisfyLimit, template <typename...> class Pred, typename IndexSequence, typename... Ts>
 		struct count_when_for_pack;
 
-		template <template <typename...> class When, std::size_t Limit, template <typename...> class Pred, std::size_t... Is, typename... Ts>
-		struct count_when_for_pack<When, Limit, Pred, std::index_sequence<Is...>, Ts...>
-		: meta::constant<meta_detail::count_when_for_pack_impl({ When<Ts, constant<Is>>::value... }, { Pred<Ts>::value... }, Limit)> { };
+		template <template <typename...> class When, std::size_t SatisfyLimit, template <typename...> class Pred, std::size_t... Is, typename... Ts>
+		struct count_when_for_pack<When, SatisfyLimit, Pred, std::index_sequence<Is...>, Ts...>
+		: meta::constant<meta_detail::count_when_for_pack_impl({ When<Ts, constant<Is>>::value... }, { Pred<Ts>::value... }, SatisfyLimit)> { };
 	} // namespace meta_detail
-
-
 
 	template <template <typename...> class Pred, typename... Ts>
 	using count_for_pack = meta_detail::count_when_for_pack<meta_detail::on_always, sizeof...(Ts), Pred, std::index_sequence_for<Ts...>, Ts...>;
@@ -250,29 +240,14 @@ namespace sol { namespace meta {
 	template <template <typename...> class Pred, typename... Args>
 	struct count_for<Pred, types<Args...>> : count_for_pack<Pred, Args...> { };
 
-	template <std::size_t Limit, template <typename...> class Pred, typename... Ts>
-	struct count_for_to_pack : meta_detail::count_when_for_pack<meta_detail::on_always, Limit, Pred, std::index_sequence_for<Ts...>, Ts...> { };
-
-	template <std::size_t Limit, template <typename...> class Pred, typename... Ts>
-	inline constexpr std::size_t count_for_to_pack_v = count_for_to_pack<Limit, Pred, Ts...>::value;
-
-	template <template <typename...> class When, std::size_t Limit, template <typename...> class Pred, typename... Ts>
-	using count_when_for_to_pack = meta_detail::count_when_for_pack<When, Limit, Pred, std::index_sequence_for<Ts...>, Ts...>;
-
-	template <template <typename...> class When, std::size_t Limit, template <typename...> class Pred, typename... Ts>
-	inline constexpr std::size_t count_when_for_to_pack_v = count_when_for_to_pack<When, Limit, Pred, Ts...>::value;
-
 	template <template <typename...> class Pred, typename... Ts>
-	using count_even_for_pack = count_when_for_to_pack<meta_detail::on_even, sizeof...(Ts), Pred, std::index_sequence_for<Ts...>, Ts...>;
+	using count_even_for_pack = meta_detail::count_when_for_pack<meta_detail::on_even, sizeof...(Ts), Pred, std::index_sequence_for<Ts...>, Ts...>;
 
 	template <template <typename...> class Pred, typename... Ts>
 	inline constexpr std::size_t count_even_for_pack_v = count_even_for_pack<Pred, Ts...>::value;
 
-	template <template <typename...> class Pred, typename... Ts>
-	using count_odd_for_pack = count_when_for_to_pack<meta_detail::on_odd, sizeof...(Ts), Pred, Ts...>;
-
-	template <template <typename...> class Pred, typename... Ts>
-	inline constexpr std::size_t count_odd_for_pack_v = count_odd_for_pack<Pred, Ts...>::value;
+	template <template <typename...> class Pred, typename T, typename...>
+	inline constexpr bool first_satisfies_v = Pred<T>::value;
 
 	template <typename... Args>
 	struct return_type {

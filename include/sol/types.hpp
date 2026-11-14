@@ -581,9 +581,6 @@ namespace sol {
 		template <typename T, typename...>
 		using is_insert_mode = std::integral_constant<bool,
 		     std::is_same_v<T, override_value_t> || std::is_same_v<T, update_if_empty_t> || std::is_same_v<T, create_if_nil_t>>;
-
-		template <typename T, typename...>
-		using is_not_insert_mode = meta::neg<is_insert_mode<T>>;
 	} // namespace detail
 
 	struct this_state {
