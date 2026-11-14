@@ -254,9 +254,9 @@ TEST_CASE("stack/strings", "test that strings can be roundtripped") {
 }
 
 TEST_CASE("detail/demangling", "test some basic demangling cases") {
-	std::string teststr = sol::detail::short_demangle<test>();
-	std::string nsteststr = sol::detail::short_demangle<muh_namespace::ns_test>();
-	std::string nsateststr = sol::detail::short_demangle<muh_namespace::ns_anon_test>();
+	std::string teststr = std::string(sol::detail::short_demangle<test>());
+	std::string nsteststr = std::string(sol::detail::short_demangle<muh_namespace::ns_test>());
+	std::string nsateststr = std::string(sol::detail::short_demangle<muh_namespace::ns_anon_test>());
 
 	REQUIRE(teststr == "test");
 	REQUIRE(nsteststr == "ns_test");

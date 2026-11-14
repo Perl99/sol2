@@ -198,8 +198,8 @@ namespace sol {
 
 			// __type table
 			lua_createtable(L, 0, 2);
-			const std::string& name = detail::demangle<T>();
-			lua_pushlstring(L, name.c_str(), name.size());
+			const std::string_view name = detail::demangle<T>();
+			lua_pushlstring(L, name.data(), name.size());
 			lua_setfield(L, -2, "name");
 			lua_CFunction is_func = &detail::is_check<T>;
 			lua_pushcclosure(L, is_func, 0);

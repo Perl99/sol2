@@ -404,77 +404,77 @@ namespace sol {
 			typedef lua_nil_t value_type;
 
 			static int at(lua_State* L_) {
-				return luaL_error(L_, "sol: cannot call 'at(index)' on type '%s': it is not recognized as a container", detail::demangle<T>().c_str());
+				return luaL_error(L_, "sol: cannot call 'at(index)' on type '%s': it is not recognized as a container", detail::demangle<T>().data());
 			}
 
 			static int get(lua_State* L_) {
-				return luaL_error(L_, "sol: cannot call 'get(key)' on type '%s': it is not recognized as a container", detail::demangle<T>().c_str());
+				return luaL_error(L_, "sol: cannot call 'get(key)' on type '%s': it is not recognized as a container", detail::demangle<T>().data());
 			}
 
 			static int index_get(lua_State* L_) {
-				return luaL_error(L_, "sol: cannot call 'container[key]' on type '%s': it is not recognized as a container", detail::demangle<T>().c_str());
+				return luaL_error(L_, "sol: cannot call 'container[key]' on type '%s': it is not recognized as a container", detail::demangle<T>().data());
 			}
 
 			static int set(lua_State* L_) {
-				return luaL_error(L_, "sol: cannot call 'set(key, value)' on type '%s': it is not recognized as a container", detail::demangle<T>().c_str());
+				return luaL_error(L_, "sol: cannot call 'set(key, value)' on type '%s': it is not recognized as a container", detail::demangle<T>().data());
 			}
 
 			static int index_set(lua_State* L_) {
 				return luaL_error(
-				     L_, "sol: cannot call 'container[key] = value' on type '%s': it is not recognized as a container", detail::demangle<T>().c_str());
+				     L_, "sol: cannot call 'container[key] = value' on type '%s': it is not recognized as a container", detail::demangle<T>().data());
 			}
 
 			static int add(lua_State* L_) {
-				return luaL_error(L_, "sol: cannot call 'add' on type '%s': it is not recognized as a container", detail::demangle<T>().c_str());
+				return luaL_error(L_, "sol: cannot call 'add' on type '%s': it is not recognized as a container", detail::demangle<T>().data());
 			}
 
 			static int insert(lua_State* L_) {
-				return luaL_error(L_, "sol: cannot call 'insert' on type '%s': it is not recognized as a container", detail::demangle<T>().c_str());
+				return luaL_error(L_, "sol: cannot call 'insert' on type '%s': it is not recognized as a container", detail::demangle<T>().data());
 			}
 
 			static int find(lua_State* L_) {
-				return luaL_error(L_, "sol: cannot call 'find' on type '%s': it is not recognized as a container", detail::demangle<T>().c_str());
+				return luaL_error(L_, "sol: cannot call 'find' on type '%s': it is not recognized as a container", detail::demangle<T>().data());
 			}
 
 			static int index_of(lua_State* L_) {
-				return luaL_error(L_, "sol: cannot call 'index_of' on type '%s': it is not recognized as a container", detail::demangle<T>().c_str());
+				return luaL_error(L_, "sol: cannot call 'index_of' on type '%s': it is not recognized as a container", detail::demangle<T>().data());
 			}
 
 			static int size(lua_State* L_) {
-				return luaL_error(L_, "sol: cannot call 'end' on type '%s': it is not recognized as a container", detail::demangle<T>().c_str());
+				return luaL_error(L_, "sol: cannot call 'end' on type '%s': it is not recognized as a container", detail::demangle<T>().data());
 			}
 
 			static int clear(lua_State* L_) {
-				return luaL_error(L_, "sol: cannot call 'clear' on type '%s': it is not recognized as a container", detail::demangle<T>().c_str());
+				return luaL_error(L_, "sol: cannot call 'clear' on type '%s': it is not recognized as a container", detail::demangle<T>().data());
 			}
 
 			static int empty(lua_State* L_) {
-				return luaL_error(L_, "sol: cannot call 'empty' on type '%s': it is not recognized as a container", detail::demangle<T>().c_str());
+				return luaL_error(L_, "sol: cannot call 'empty' on type '%s': it is not recognized as a container", detail::demangle<T>().data());
 			}
 
 			static int erase(lua_State* L_) {
-				return luaL_error(L_, "sol: cannot call 'erase' on type '%s': it is not recognized as a container", detail::demangle<T>().c_str());
+				return luaL_error(L_, "sol: cannot call 'erase' on type '%s': it is not recognized as a container", detail::demangle<T>().data());
 			}
 
 			static int next(lua_State* L_) {
-				return luaL_error(L_, "sol: cannot call 'next' on type '%s': it is not recognized as a container", detail::demangle<T>().c_str());
+				return luaL_error(L_, "sol: cannot call 'next' on type '%s': it is not recognized as a container", detail::demangle<T>().data());
 			}
 
 			static int pairs(lua_State* L_) {
-				return luaL_error(L_, "sol: cannot call '__pairs/pairs' on type '%s': it is not recognized as a container", detail::demangle<T>().c_str());
+				return luaL_error(L_, "sol: cannot call '__pairs/pairs' on type '%s': it is not recognized as a container", detail::demangle<T>().data());
 			}
 
 			static int ipairs(lua_State* L_) {
-				return luaL_error(L_, "sol: cannot call '__ipairs' on type '%s': it is not recognized as a container", detail::demangle<T>().c_str());
+				return luaL_error(L_, "sol: cannot call '__ipairs' on type '%s': it is not recognized as a container", detail::demangle<T>().data());
 			}
 
 			static iterator begin(lua_State* L_, T&) {
-				luaL_error(L_, "sol: cannot call 'being' on type '%s': it is not recognized as a container", detail::demangle<T>().c_str());
+				luaL_error(L_, "sol: cannot call 'being' on type '%s': it is not recognized as a container", detail::demangle<T>().data());
 				return lua_nil;
 			}
 
 			static sentinel end(lua_State* L_, T&) {
-				luaL_error(L_, "sol: cannot call 'end' on type '%s': it is not recognized as a container", detail::demangle<T>().c_str());
+				luaL_error(L_, "sol: cannot call 'end' on type '%s': it is not recognized as a container", detail::demangle<T>().data());
 				return lua_nil;
 			}
 		};
@@ -546,11 +546,11 @@ namespace sol {
 				if (!p) {
 					luaL_error(L_,
 					     "sol: 'self' is not of type '%s' (pass 'self' as first argument with ':' or call on proper type)",
-					     detail::demangle<T>().c_str());
+					     detail::demangle<T>().data());
 				}
 				if (p.value() == nullptr) {
 					luaL_error(
-					     L_, "sol: 'self' argument is nil (pass 'self' as first argument with ':' or call on a '%s' type)", detail::demangle<T>().c_str());
+					     L_, "sol: 'self' argument is nil (pass 'self' as first argument with ':' or call on a '%s' type)", detail::demangle<T>().data());
 				}
 				return *p.value();
 #else
@@ -691,7 +691,7 @@ namespace sol {
 					if (key == 0) {
 						return add_copyable(is_copyable(), L_, self, std::move(value), meta::has_insert_after<T>::value ? backit : it);
 					}
-					return detail::error_result("out of bounds (too big) for set on '%s'", detail::demangle<T>().c_str());
+					return detail::error_result("out of bounds (too big) for set on '%s'", detail::demangle<T>().data());
 				}
 				return set_writable(is_writable(), L_, self, it, std::move(value));
 			}
@@ -700,14 +700,14 @@ namespace sol {
 				decltype(auto) key = okey.as<K>();
 				key = static_cast<K>(static_cast<std::ptrdiff_t>(key) + deferred_uc::index_adjustment(L_, self));
 				if (key < 0) {
-					return detail::error_result("sol: out of bounds (too small) for set on '%s'", detail::demangle<T>().c_str());
+					return detail::error_result("sol: out of bounds (too small) for set on '%s'", detail::demangle<T>().data());
 				}
 				std::ptrdiff_t len = static_cast<std::ptrdiff_t>(size_start(L_, self));
 				if (key == len) {
 					return add_copyable(is_copyable(), L_, self, std::move(value));
 				}
 				else if (key >= len) {
-					return detail::error_result("sol: out of bounds (too big) for set on '%s'", detail::demangle<T>().c_str());
+					return detail::error_result("sol: out of bounds (too big) for set on '%s'", detail::demangle<T>().data());
 				}
 				auto it = std::next(deferred_uc::begin(L_, self), key);
 				return set_writable(is_writable(), L_, self, it, std::move(value));
@@ -750,7 +750,7 @@ namespace sol {
 					(void)it;
 					(void)key;
 					return detail::error_result(
-					     "cannot call 'set' on '%s': there is no 'insert' function on this associative type", detail::demangle<T>().c_str());
+					     "cannot call 'set' on '%s': there is no 'insert' function on this associative type", detail::demangle<T>().data());
 				}
 			}
 
@@ -769,7 +769,7 @@ namespace sol {
 					(void)it;
 					(void)key;
 					return detail::error_result(
-					     "cannot call 'set' on '%s': there is no 'insert' function on this non-associative type", detail::demangle<T>().c_str());
+					     "cannot call 'set' on '%s': there is no 'insert' function on this non-associative type", detail::demangle<T>().data());
 				}
 			}
 
@@ -861,7 +861,7 @@ namespace sol {
 			template <bool = false>
 			static detail::error_result find_comparative(std::false_type, lua_State*, T&) {
 				return detail::error_result("cannot call 'find' on '%s': there is no 'find' function and the value_type is not equality comparable",
-				     detail::demangle<T>().c_str());
+				     detail::demangle<T>().data());
 			}
 
 			template <bool idx_of = false>
@@ -968,7 +968,7 @@ namespace sol {
 					(void)key;
 					(void)pos;
 					return detail::error_result(
-					     "cannot call 'insert' on '%s': there is no 'insert' function on this associative type", detail::demangle<T>().c_str());
+					     "cannot call 'insert' on '%s': there is no 'insert' function on this associative type", detail::demangle<T>().data());
 				}
 			}
 
@@ -1026,7 +1026,7 @@ namespace sol {
 					auto e = deferred_uc::end(L_, self);
 					for (auto it = deferred_uc::begin(L_, self); key > 0; ++backit, ++it, --key) {
 						if (backit == e) {
-							return detail::error_result("sol: out of bounds (too big) for set on '%s'", detail::demangle<T>().c_str());
+							return detail::error_result("sol: out of bounds (too big) for set on '%s'", detail::demangle<T>().data());
 						}
 					}
 				}
@@ -1097,7 +1097,7 @@ namespace sol {
 					auto e = deferred_uc::end(L_, self);
 					for (auto it = deferred_uc::begin(L_, self); key > 0; ++backit, ++it, --key) {
 						if (backit == e) {
-							return detail::error_result("sol: out of bounds for erase on '%s'", detail::demangle<T>().c_str());
+							return detail::error_result("sol: out of bounds for erase on '%s'", detail::demangle<T>().data());
 						}
 					}
 				}
@@ -1106,7 +1106,7 @@ namespace sol {
 			}
 
 			static detail::error_result erase_after_has(std::false_type, lua_State*, T&, const K&) {
-				return detail::error_result("sol: cannot call erase on '%s'", detail::demangle<T>().c_str());
+				return detail::error_result("sol: cannot call erase on '%s'", detail::demangle<T>().data());
 			}
 
 			static detail::error_result erase_key_has(std::true_type, lua_State* L_, T& self, K& key) {
@@ -1138,7 +1138,7 @@ namespace sol {
 			}
 
 			static void clear_has(std::false_type, lua_State* L_, T&) {
-				luaL_error(L_, "sol: cannot call clear on '%s'", detail::demangle<T>().c_str());
+				luaL_error(L_, "sol: cannot call clear on '%s'", detail::demangle<T>().data());
 			}
 
 			static bool empty_has(std::true_type, lua_State*, T& self) {
@@ -1439,11 +1439,11 @@ namespace sol {
 				if (!p) {
 					luaL_error(L_,
 					     "sol: 'self' is not of type '%s' (pass 'self' as first argument with ':' or call on proper type)",
-					     detail::demangle<T>().c_str());
+					     detail::demangle<T>().data());
 				}
 				if (p.value() == nullptr) {
 					luaL_error(
-					     L_, "sol: 'self' argument is nil (pass 'self' as first argument with ':' or call on a '%s' type)", detail::demangle<T>().c_str());
+					     L_, "sol: 'self' argument is nil (pass 'self' as first argument with ':' or call on a '%s' type)", detail::demangle<T>().data());
 				}
 #endif // Safe getting with error
 				return *p.value();
@@ -1465,7 +1465,7 @@ namespace sol {
 			}
 
 			static int find(std::false_type, lua_State* L_) {
-				return luaL_error(L_, "sol: cannot call 'find' on '%s': no supported comparison operator for the value type", detail::demangle<T>().c_str());
+				return luaL_error(L_, "sol: cannot call 'find' on '%s': no supported comparison operator for the value type", detail::demangle<T>().data());
 			}
 
 			static int next_iter(lua_State* L_) {
@@ -1485,19 +1485,19 @@ namespace sol {
 
 		public:
 			static int clear(lua_State* L_) {
-				return luaL_error(L_, "sol: cannot call 'clear' on type '%s': cannot remove all items from a fixed array", detail::demangle<T>().c_str());
+				return luaL_error(L_, "sol: cannot call 'clear' on type '%s': cannot remove all items from a fixed array", detail::demangle<T>().data());
 			}
 
 			static int erase(lua_State* L_) {
-				return luaL_error(L_, "sol: cannot call 'erase' on type '%s': cannot remove an item from fixed arrays", detail::demangle<T>().c_str());
+				return luaL_error(L_, "sol: cannot call 'erase' on type '%s': cannot remove an item from fixed arrays", detail::demangle<T>().data());
 			}
 
 			static int add(lua_State* L_) {
-				return luaL_error(L_, "sol: cannot call 'add' on type '%s': cannot add to fixed arrays", detail::demangle<T>().c_str());
+				return luaL_error(L_, "sol: cannot call 'add' on type '%s': cannot add to fixed arrays", detail::demangle<T>().data());
 			}
 
 			static int insert(lua_State* L_) {
-				return luaL_error(L_, "sol: cannot call 'insert' on type '%s': cannot insert new entries into fixed arrays", detail::demangle<T>().c_str());
+				return luaL_error(L_, "sol: cannot call 'insert' on type '%s': cannot insert new entries into fixed arrays", detail::demangle<T>().data());
 			}
 
 			static int at(lua_State* L_) {
@@ -1523,10 +1523,10 @@ namespace sol {
 				std::ptrdiff_t idx = stack::unqualified_get<std::ptrdiff_t>(L_, 2);
 				idx += deferred_uc::index_adjustment(L_, self);
 				if (idx >= static_cast<std::ptrdiff_t>(std::extent_v<T>)) {
-					return luaL_error(L_, "sol: index out of bounds (too big) for set on '%s'", detail::demangle<T>().c_str());
+					return luaL_error(L_, "sol: index out of bounds (too big) for set on '%s'", detail::demangle<T>().data());
 				}
 				if (idx < 0) {
-					return luaL_error(L_, "sol: index out of bounds (too small) for set on '%s'", detail::demangle<T>().c_str());
+					return luaL_error(L_, "sol: index out of bounds (too small) for set on '%s'", detail::demangle<T>().data());
 				}
 				self[idx] = stack::unqualified_get<value_type>(L_, 3);
 				return 0;

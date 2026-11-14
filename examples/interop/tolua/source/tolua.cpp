@@ -30,7 +30,7 @@ inline bool sol_lua_interop_check(sol::types<T>, lua_State* L,
 	(void)index_type;
 	(void)handler;
 	int index = lua_absindex(L, relindex);
-	std::string name = sol::detail::short_demangle<T>();
+	std::string name = std::string(sol::detail::short_demangle<T>());
 	tolua_Error tolua_err {};
 	int r = tolua_isusertype(
 	     L, index, name.c_str(), 0, &tolua_err);

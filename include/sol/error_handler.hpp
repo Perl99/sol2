@@ -49,7 +49,7 @@ namespace sol {
 		constexpr const char* not_enough_stack_space_environment = "not enough space left on Lua stack to retrieve environment";
 		constexpr const char* protected_function_error = "caught (...) unknown error during protected_function call";
 
-		inline void accumulate_and_mark(const std::string& n, std::string& aux_message, int& marker) {
+		inline void accumulate_and_mark(const string_view n, std::string& aux_message, int& marker) {
 			if (marker > 0) {
 				aux_message += ", ";
 			}
@@ -145,7 +145,7 @@ namespace sol {
 			{
 				std::string aux_message = "(bad argument into '";
 				aux_message += detail::demangle<R>();
-				aux_message += "(";
+				aux_message += '(';
 				int marker = 0;
 				(..., detail::accumulate_and_mark(detail::demangle<Args>(), aux_message, marker));
 				aux_message += ")')";

@@ -30,13 +30,11 @@ namespace sol {
 
 	template <typename T>
 	struct usertype_traits {
-		static const std::string& name() {
-			static const std::string& n = detail::short_demangle<T>();
-			return n;
+		static std::string_view name() {
+			return detail::short_demangle<T>();
 		}
-		static const std::string& qualified_name() {
-			static const std::string& q_n = detail::demangle<T>();
-			return q_n;
+		static std::string_view qualified_name() {
+			return detail::demangle<T>();
 		}
 		static const std::string& metatable() {
 			static const std::string m = std::string("sol.").append(detail::demangle<T>());
