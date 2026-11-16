@@ -66,13 +66,9 @@ namespace sol {
 		struct inheritance {
 			typedef typename base<T>::type bases_t;
 
-			static bool type_check_bases(types<>, const string_view&) {
-				return false;
-			}
-
-			template <typename Base, typename... Args>
-			static bool type_check_bases(types<Base, Args...>, const string_view& ti) {
-				return ti == usertype_traits<Base>::qualified_name() || type_check_bases(types<Args...>(), ti);
+			template <typename... Bases>
+			static bool type_check_bases(types<Bases...>, const string_view& ti) {
+				return ((ti == usertype_traits<Bases>::qualified_name()) || ...);
 			}
 
 			static bool type_check(const string_view& ti) {

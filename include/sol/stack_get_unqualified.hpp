@@ -989,17 +989,9 @@ namespace sol { namespace stack {
 	struct unqualified_getter<std::tuple<Tn...>> {
 		typedef std::tuple<decltype(stack::get<Tn>(nullptr, 0))...> R;
 
-		template <typename... Args>
-		static R apply(std::index_sequence<>, lua_State*, int, record&, Args&&... args) {
-			// Fuck you too, VC++
-			return R { std::forward<Args>(args)... };
-		}
-
-		template <std::size_t I, std::size_t... Ix, typename... Args>
-		static R apply(std::index_sequence<I, Ix...>, lua_State* L, int index, record& tracking, Args&&... args) {
-			// Fuck you too, VC++
-			typedef std::tuple_element_t<I, std::tuple<Tn...>> T;
-			return apply(std::index_sequence<Ix...>(), L, index, tracking, std::forward<Args>(args)..., stack::get<T>(L, index + tracking.used, tracking));
+		template <std::size_t... Ix>
+		static R apply(std::index_sequence<Ix...>, lua_State* L, int index, record& tracking) {
+			return R { stack::get<std::tuple_element_t<Ix, std::tuple<Tn...>>>(L, index + tracking.used, tracking)... };
 		}
 
 		static R get(lua_State* L, int index, record& tracking) {

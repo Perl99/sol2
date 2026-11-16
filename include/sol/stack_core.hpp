@@ -1103,16 +1103,9 @@ namespace sol {
 
 		namespace stack_detail {
 
-			template <typename Handler>
-			bool check_types(lua_State*, int, Handler&&, record&) {
-				return true;
-			}
-
-			template <typename T, typename... Args, typename Handler>
+			template <typename... Args, typename Handler>
 			bool check_types(lua_State* L, int firstargument, Handler&& handler, record& tracking) {
-				if (!stack::check<T>(L, firstargument + tracking.used, handler, tracking))
-					return false;
-				return check_types<Args...>(L, firstargument, std::forward<Handler>(handler), tracking);
+				return (stack::check<Args>(L, firstargument + tracking.used, handler, tracking) && ...);
 			}
 
 			template <typename... Args, typename Handler>
